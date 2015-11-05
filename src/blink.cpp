@@ -1,7 +1,7 @@
 // This example is taken and modified from the Teensyduino 'Blink' sketch
 // See: https://www.pjrc.com/teensy/teensyduino.html
 
-#import <WProgram.h>
+#include <WProgram.h>
 
 const int ledPin = 13;
 
