@@ -20,6 +20,7 @@ That's why I came up with this solution here. Basically you can just copy the `M
 4. Connect your Teensy3.1+
 5. Run `make upload`
 
+Caveats: because of the way this `Makefile` was hacked, please avoid specifying multiple targets for `make`, e.g. don't do `make distclean all` but `make distclean` && `make all` or the like. This situation will likely improve in the future.
 
 #### Makefile targets
 * `build`, `all` builds the `.hex` file without uploading
