@@ -197,30 +197,30 @@ $(OUT_PATH)/$(M_PROJECT).elf: $(LIBTEENSY3) $(SOURCE_OBJECTS)
 	@$(CXX) $(LDFLAGS) -o $@ $(SOURCE_OBJECTS) $(LIBS) $(LIBTEENSY3)
 
 # Specialized .c/.cpp rules for all source folders
-ifneq ($(wildcard $(TEENSY3_OVERRIDE_PATH)),)
-$(OUT_PATH)/%.o: $(TEENSY3_OVERRIDE_PATH)/%.c
-	@echo "Compiling "$(notdir $<)" ..."
+ifneq ($(wildcard $(TEENSY3_PATH)),)
+$(OUT_PATH)/%.o: $(TEENSY3_PATH)/%.c
+	@echo "Compiling $< ..."
 	@$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
-$(OUT_PATH)/%.o: $(TEENSY3_OVERRIDE_PATH)/%.cpp
-	@echo "Compiling "$(notdir $<)" ..."
+$(OUT_PATH)/%.o: $(TEENSY3_PATH)/%.cpp
+	@echo "Compiling $< ..."
 	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
 endif
 
 $(OUT_PATH)/%.o: $(SRC_PATH)/%.c
-	@echo "Compiling "$(notdir $<)" ..."
+	@echo "Compiling $< ..."
 	@$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
 $(OUT_PATH)/%.o: $(SRC_PATH)/%.cpp
-	@echo "Compiling "$(notdir $<)" ..."
+	@echo "Compiling $< ..."
 	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
 
 $(OUT_PATH)/%.o: $(TEENSY3_COPY)/%.c
-	@echo "Compiling "$(notdir $<)" ..."
+	@echo "Compiling $< ..."
 	@$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
 $(OUT_PATH)/%.o: $(TEENSY3_COPY)/%.cpp
-	@echo "Compiling "$(notdir $<)" ..."
+	@echo "Compiling $< ..."
 	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
 
 # Include auto generated dependencies, don't fail on error
