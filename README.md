@@ -27,9 +27,9 @@ That's why I came up with this solution here. Basically you can just copy the
 4. Connect your Teensy3.1+
 5. Run `make upload`
 
-Caveats: because of the way this `Makefile` was hacked, please avoid specifying
-multiple targets for `make`, e.g. don't do `make distclean all` but `make distclean && make all`
-or the like. This situation will likely improve in the future.
+Caveats: Arduino libraries are currently not supported, compiling using multiple
+threads can initially fail because of the recursive nature.
+
 
 #### Makefile targets
 * `build`, `all` builds the `.hex` file without uploading
@@ -50,7 +50,7 @@ modify the first few lines that contain the `M_*` variables.
 * `M_LAYOUT`: keyboard layout
 * `M_ARDUINO_VERSION`: Arduino software version
 * `M_TEENSYDUINO_VERSION`: Teensyduino version
-* `M_CPU`: `__MK20DX256__` for Teensy3.1+, `__MK20DX128__` for Teensy3.0
+* `M_TEENSY_VERSION`: 3.0, 3.1 or 3.2
 * `M_OPTIMIZATIONS`: debugging and optimization switches
 
 

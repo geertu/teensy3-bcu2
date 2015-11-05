@@ -1,56 +1,118 @@
+# Name of the project, also used for naming the .hex file
 M_PROJECT             := teensy3-blinky
+# Used CPU clock
 M_CPU_CLOCK           := 72000000
+# USB type
 M_USB_TYPE            := USB_SERIAL
+# Keyboard layout (what was that for?=
 M_LAYOUT              := US_ENGLISH
+# Arduino version
 M_ARDUINO_VERSION     := 10605
+# Teensyduino version
 M_TEENSYDUINO_VERSION := 125
-M_CPU                 := __MK20DX256__
-M_OPTIMIZATIONS       := -g -Os
+# Teensy version (3.0, 3.1 or 3.2)
+M_TEENSY_VERSION      := 3.2
+# Compilation optimization flags
+M_OPTIMIZATIONS       := -O3
 
-OUT_PATH     := bin
-SRC_PATH     := src
-TEENSY3_PATH := teensy3
-TEENSY3_COPY := teensy3.copy
+# Output path for binaries
+OUT_PATH              := bin
+# Path for sources
+SRC_PATH              := src
+# Teensy3 override folder
+TEENSY3_PATH          := teensy3
+# Teensy3 copy folder
+TEENSY3_COPY          := teensy3.copy
 
-TOOLSPATH    := $(ARDUINO_HOME)/hardware/tools
-LIBRARYPATH  := $(ARDUINO_HOME)/libraries
-COMPILERPATH := $(ARDUINO_HOME)/hardware/tools/arm/bin
+################################################################################
+#
+# Arduino: https://www.arduino.cc/en/Main/Software
+# Teensyduino: https://www.pjrc.com/teensy/teensyduino.html
+# Original Makefile: https://github.com/rjeschke/teensy3-blink
+#
+################################################################################
 
+# Setting up some paths
+TOOLSPATH             := $(realpath $(ARDUINO_HOME)/hardware/tools)
+LIBRARYPATH           := $(realpath $(ARDUINO_HOME)/libraries)
+COMPILERPATH          := $(realpath $(ARDUINO_HOME)/hardware/tools/arm/bin)
 TEENSY3_CORE_PATH     := $(realpath $(ARDUINO_HOME)/hardware/teensy/avr/cores/teensy3)
 TEENSY3_OVERRIDE_PATH := $(realpath ./$(TEENSY3_PATH))
 
-OPTIONS   = -DF_CPU=$(M_CPU_CLOCK) -D$(M_USB_TYPE) -DLAYOUT_$(M_LAYOUT)
-OPTIONS  += -DUSING_MAKEFILE -D$(M_CPU) -DARDUINO=$(M_ARDUINO_VERSION)
-OPTIONS  += -DTEENSYDUINO=$(M_TEENSYDUINO_VERSION)
-CPPFLAGS  = -Wall $(M_OPTIMIZATIONS) -mcpu=cortex-m4 -mthumb -nostdlib
-CPPFLAGS += -MMD $(OPTIONS) $(addprefix -I,src $(TEENSY3_COPY))
+# Setting up linker definitions and M_CPU define
+ifeq ($(M_TEENSY_VERSION),3.0)
+	M_CPU       := __MK20DX128__
+	M_LINK_DEFS := mk20dx128.ld
+else ifeq ($(M_TEENSY_VERSION),3.1)
+	M_CPU       := __MK20DX256__
+	M_LINK_DEFS := mk20dx256.ld
+else ifeq ($(M_TEENSY_VERSION),3.2)
+	M_CPU       := __MK20DX256__
+	M_LINK_DEFS := mk20dx256.ld
+else
+	$(error "Unsupported Teensy version: $(M_TEENSY)")
+endif
+
+# Putting the flags together
+CPPFLAGS  = -Wall $(M_OPTIMIZATIONS) -mcpu=cortex-m4 -mthumb -nostdlib -MMD
+CPPFLAGS += -DF_CPU=$(M_CPU_CLOCK) -D$(M_USB_TYPE) -DLAYOUT_$(M_LAYOUT)
+CPPFLAGS += -DUSING_MAKEFILE -D$(M_CPU) -DARDUINO=$(M_ARDUINO_VERSION)
+CPPFLAGS += -DTEENSYDUINO=$(M_TEENSYDUINO_VERSION)
 CXXFLAGS  = -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
 CFLAGS    =
 LDFLAGS   = -Os -Wl,--gc-sections,--defsym=__rtc_localtime=0 --specs=nano.specs
-LDFLAGS  += -mcpu=cortex-m4 -mthumb -T$(TEENSY3_COPY)/mk20dx256.ld
+LDFLAGS  += -mcpu=cortex-m4 -mthumb
 LIBS      = -lm
 
+# Simple `find` based directory lister
 listfiles = $(foreach tmp,$(shell find $(1) -type "f"),$(subst $(1),,$(tmp)))
 
-EXCLUDED_TEENSY3_CORE_FILES := main.cpp
-ifeq ($(wildcard $(TEENSY3_OVERRIDE_PATH)),)
-	TEENSY3_OVERRIDE_FILES =
-else
-	TEENSY3_OVERRIDE_FILES = $(call listfiles,$(TEENSY3_OVERRIDE_PATH)/)
+# Check if SRC_PATH and TEENSY3_CORE_PATH exist
+ifeq ($(wildcard $(SRC_PATH)),)
+	$(error "Missing SRC_PATH")
 endif
-TEENSY3_CORE_FILES := $(filter-out $(EXCLUDED_TEENSY3_CORE_FILES) \
-  $(TEENSY3_OVERRIDE_FILES),$(call listfiles,$(TEENSY3_CORE_PATH)/))
-ALL_TEENSY3_FILES  := $(addprefix $(TEENSY3_CORE_PATH)/,$(TEENSY3_CORE_FILES)) \
-  $(addprefix $(TEENSY3_OVERRIDE_PATH)/,$(TEENSY3_OVERRIDE_FILES))
-TEENSY3_OBJECTS    := $(addprefix $(OUT_PATH)/,$(patsubst %.cpp,%.o,$(patsubst \
-  %.c,%.o,$(filter %.c %.cpp,$(TEENSY3_CORE_FILES)) \
-  $(filter %.c %.cpp,$(TEENSY3_OVERRIDE_FILES)))))
+ifeq ($(wildcard $(TEENSY3_CORE_PATH)),)
+	$(error "Missing Teensy3 core files")
+endif
 
-SRC_FILES    := $(call listfiles,$(realpath $(SRC_PATH))/)
-SRC_OBJECTS  := $(addprefix $(OUT_PATH)/,$(patsubst %.cpp,%.o,$(patsubst \
-  %.c,%.o,$(filter %.c %.cpp,$(SRC_FILES)))))
+# Check if user uses linker definitions override
+ifeq ($(wildcard $(TEENSY3_OVERRIDE_PATH)/$(M_LINK_DEFS)),)
+	LDFLAGS  += -T$(TEENSY3_COPY)/$(M_LINK_DEFS)
+else
+	LDFLAGS  += -T$(TEENSY3_OVERRIDE_PATH)/$(M_LINK_DEFS)
+endif
 
-VPATH               := $(SRC_PATH) $(TEENSY3_COPY)
+# Files and folders
+INCLUDE_FOLDERS   := $(SRC_PATH) $(TEENSY3_COPY)
+CORE_FILES        := $(call listfiles,$(TEENSY3_CORE_PATH)/)
+CORE_EXCLUDES     := main.cpp Makefile
+ALL_TEENSY3_FILES := $(addprefix $(TEENSY3_CORE_PATH)/,$(CORE_FILES))
+
+# Check if Teensy3 override is in place
+ifneq ($(wildcard $(TEENSY3_OVERRIDE_PATH)),)
+	CORE_OVERRIDES = $(call listfiles,$(TEENSY3_OVERRIDE_PATH)/)
+	CORE_EXCLUDES += $(CORE_OVERRIDES)
+	ALL_TEENSY3_FILES += $(addprefix $(TEENSY3_OVERRIDE_PATH)/,$(CORE_OVERRIDES))
+	INCLUDE_FOLDERS += $(TEENSY3_PATH)
+else
+	CORE_OVERRIDES =
+endif
+
+# Add include folders and set source and object lists
+CPPFLAGS        += $(addprefix -I,$(INCLUDE_FOLDERS))
+TEENSY_SOURCES  := $(filter %.c %cpp,$(notdir $(filter-out \
+  $(CORE_EXCLUDES),$(CORE_FILES)) $(CORE_OVERRIDES)))
+TEENSY_OBJECTS  := $(addprefix $(OUT_PATH)/,$(patsubst %.cpp,%.o,$(patsubst \
+  %.c,%.o,$(TEENSY_SOURCES))))
+SOURCES         := $(filter %.c %cpp,$(notdir $(call listfiles,$(SRC_PATH))))
+SOURCE_OBJECTS  := $(addprefix $(OUT_PATH)/,$(patsubst %.cpp,%.o,$(patsubst \
+  %.c,%.o,$(SOURCES))))
+
+# Intermediate library for Teensy3 core
+LIBTEENSY3          := $(OUT_PATH)/libteensy3.a
+
+# Tools needed
+AR                  := $(abspath $(COMPILERPATH))/arm-none-eabi-ar
 CC                  := $(abspath $(COMPILERPATH))/arm-none-eabi-gcc
 CXX                 := $(abspath $(COMPILERPATH))/arm-none-eabi-g++
 OBJCOPY             := $(abspath $(COMPILERPATH))/arm-none-eabi-objcopy
@@ -58,67 +120,113 @@ SIZE                := $(abspath $(COMPILERPATH))/arm-none-eabi-size
 TEENSY_POST_COMPILE := $(abspath $(TOOLSPATH))/teensy_post_compile
 TEENSY_REBOOT       := $(abspath $(TOOLSPATH))/teensy_reboot
 
-all: build
+# (Public) target definitions ahead
+.PHONY: all clean clean-all build upload symbols
 
-.PHONY: clean clean-all
+# Same as build
+all: $(OUT_PATH)/$(M_PROJECT).hex
+
+# Compile and link .hex
+build: $(OUT_PATH)/$(M_PROJECT).hex
+
+# Clean OUT_PATH
 clean:
 	@rm -rf $(OUT_PATH)
 
+# Clean OUT_PATH and TEENSY3_COPY
 distclean: clean
 	@rm -rf $(TEENSY3_COPY)
 
-symbols: $(OUT_PATH)/eclipse_cdt_symbols.xml
-
-ifeq  ($(wildcard $(TEENSY3_COPY)/.stamp),)
-build: $(TEENSY3_COPY)/.stamp
-upload: $(TEENSY3_COPY)/.stamp
-$(OUT_PATH)/%.hex: $(TEENSY3_COPY)/.stamp
-$(OUT_PATH)/$(M_PROJECT).elf: $(TEENSY3_COPY)/.stamp
-else
-build: $(OUT_PATH)/$(M_PROJECT).hex
-
+# Builds and uploads to Teensy3
 upload: $(OUT_PATH)/$(M_PROJECT).hex
 	@$(TEENSY_POST_COMPILE) -file=$(OUT_PATH)/$(M_PROJECT) -path=$(shell pwd) \
 	  -tools=$(abspath $(TOOLSPATH))
-	@echo "Rebooting Teensy"
+	@echo "Rebooting Teensy ..."
 	@-$(TEENSY_REBOOT)
 
-$(OUT_PATH)/%.hex: $(OUT_PATH)/%.elf
-	@$(SIZE) $<
-	@$(OBJCOPY) -O ihex -R .eeprom $< $@
+# Creates Eclipse CDT symbols
+symbols: $(OUT_PATH) $(OUT_PATH)/eclipse_cdt_symbols.xml
 
-$(OUT_PATH)/$(M_PROJECT).elf: $(TEENSY3_COPY)/.stamp $(TEENSY3_OBJECTS) $(SRC_OBJECTS)
-	@echo "Linking: "$@
-	@$(CC) $(LDFLAGS) -o $@ $(TEENSY3_OBJECTS) $(SRC_OBJECTS) $(LIBS)
-endif
+# (Internal) target definitions ahead
+# This one builds TEENSY3_COPY and recursively builds LIBTEENSY3
+$(TEENSY3_COPY): $(ALL_TEENSY3_FILES)
+	@for f in $(filter-out $(CORE_EXCLUDES),$(CORE_FILES));\
+    do \
+      if [ ! -e $(TEENSY3_COPY)/$$f ]; \
+      then \
+        mkdir -p `dirname $(TEENSY3_COPY)/$$f`; \
+        cp -fp $(TEENSY3_CORE_PATH)/$$f $(TEENSY3_COPY)/$$f; \
+      fi \
+    done
+	@for f in $(CORE_EXCLUDES); \
+    do \
+      if [ -e $(TEENSY3_COPY)/$$f ]; then \
+        rm $(TEENSY3_COPY)/$$f; \
+      fi \
+    done
+	@touch $(TEENSY3_COPY)
+	@BUILD_TEENSY3_LIB=1 $(MAKE) $(LIBTEENSY3)
 
-$(TEENSY3_COPY)/.stamp: $(ALL_TEENSY3_FILES)
-	@for f in $(TEENSY3_CORE_FILES); do mkdir -p `dirname $(TEENSY3_COPY)/$$f`; \
-	  cp -pf $(TEENSY3_CORE_PATH)/$$f $(TEENSY3_COPY)/$$f; done
-	@for f in $(TEENSY3_OVERRIDE_FILES); do mkdir -p `dirname $(TEENSY3_COPY)/$$f`; \
-	  cp -pf $(TEENSY3_OVERRIDE_PATH)/$$f $(TEENSY3_COPY)/$$f; done
-	@touch teensy3.copy/.stamp
-	@$(MAKE) $(MAKECMDGOALS)
-
+# Create OUT_PATH
 $(OUT_PATH):
 	@mkdir -p $(OUT_PATH)
 
+# Creates the .hex from the .elf
+$(OUT_PATH)/%.hex: $(OUT_PATH)/%.elf
+	@echo "Preparing "$(notdir $<)" ..."
+	@$(SIZE) $<
+	@$(OBJCOPY) -O ihex -R .eeprom $< $@
 
-$(TEENSY3_OBJECTS): | $(OUT_PATH)
+# Make sure OUT_PATH exists
+$(TEENSY_OBJECTS): | $(OUT_PATH)
 
-$(SRC_OBJECTS): | $(OUT_PATH)
+# Make sure OUT_PATH exists
+$(SOURCE_OBJECTS): | $(OUT_PATH)
 
-$(OUT_PATH)/%.o: %.cpp
-	@echo $<" -> "$@
-	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
+# Only build LIBTEENSY3 if called recursively
+ifeq ($(BUILD_TEENSY3_LIB),1)
+$(LIBTEENSY3): $(TEENSY_OBJECTS)
+	@$(AR) rcs $@ $(TEENSY_OBJECTS)
+else
+$(LIBTEENSY3): $(TEENSY3_COPY)
+endif
 
-$(OUT_PATH)/%.o: %.c
-	@echo $<" -> "$@
+# Links the .elf
+$(OUT_PATH)/$(M_PROJECT).elf: $(LIBTEENSY3) $(SOURCE_OBJECTS)
+	@echo "Linking "$@" ..."
+	@$(CXX) $(LDFLAGS) -o $@ $(SOURCE_OBJECTS) $(LIBS) $(LIBTEENSY3)
+
+# Specialized .c/.cpp rules for all source folders
+ifneq ($(wildcard $(TEENSY3_OVERRIDE_PATH)),)
+$(OUT_PATH)/%.o: $(TEENSY3_OVERRIDE_PATH)/%.c
+	@echo "Compiling "$(notdir $<)" ..."
 	@$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
--include $(TEENSY3_OBJECTS:.o=.d)
--include $(SRC_OBJECTS:.o=.d)
+$(OUT_PATH)/%.o: $(TEENSY3_OVERRIDE_PATH)/%.cpp
+	@echo "Compiling "$(notdir $<)" ..."
+	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
+endif
 
+$(OUT_PATH)/%.o: $(SRC_PATH)/%.c
+	@echo "Compiling "$(notdir $<)" ..."
+	@$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
+
+$(OUT_PATH)/%.o: $(SRC_PATH)/%.cpp
+	@echo "Compiling "$(notdir $<)" ..."
+	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
+
+$(OUT_PATH)/%.o: $(TEENSY3_COPY)/%.c
+	@echo "Compiling "$(notdir $<)" ..."
+	@$(CC) -c $(CPPFLAGS) $(CFLAGS) -o $@ $<
+
+$(OUT_PATH)/%.o: $(TEENSY3_COPY)/%.cpp
+	@echo "Compiling "$(notdir $<)" ..."
+	@$(CXX) -c $(CPPFLAGS) $(CXXFLAGS) -o $@ $<
+
+# Include auto generated dependencies, don't fail on error
+-include $(ALL_OBJECTS:.o=.d)
+
+# Eclipse CDT symbol creator
 $(OUT_PATH)/eclipse_cdt_symbols.xml: Makefile $(OUT_PATH)
 	@echo '<?xml version="1.0" encoding="UTF-8"?>' > $@
 	@echo '<cdtprojectproperties>' >> $@
@@ -143,3 +251,4 @@ $(OUT_PATH)/eclipse_cdt_symbols.xml: Makefile $(OUT_PATH)
 	@echo '</language>' >> $@
 	@echo '</section>' >> $@
 	@echo '</cdtprojectproperties>' >> $@
+
