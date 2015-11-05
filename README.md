@@ -2,9 +2,16 @@ Blink for Teensy3 - Custom, simple Makefile starting point
 ---
 
 #### Another Blink?
-When I started with Teensy3 development myself, I quickly noticed that the Arduino sketch editor is maybe nice for small projects, but misses the power of a real IDE. As I am using Eclipse heavily for C and C++ development it was quite natural to be able to develop for Teensy3 using Eclipse. There are existing solutions out there, that give you makefiles, but I did not want to include the whole vanilla Teensy3 core for nothing or for small changes.
+When I started with Teensy3 development myself, I quickly noticed that the Arduino
+sketch editor is maybe nice for small projects, but misses the power of a real
+IDE. As I am using Eclipse heavily for C and C++ development it was quite natural
+to be able to develop for Teensy3 using Eclipse. There are existing solutions out
+there, that give you makefiles, but I did not want to include the whole vanilla
+Teensy3 core for nothing or for small changes.
 
-That's why I came up with this solution here. Basically you can just copy the `Makefile`, create a C/C++ file in the `src` folder and start developing. (Instructions on how to import the project into *Eclipse* are given below).
+That's why I came up with this solution here. Basically you can just copy the
+`Makefile`, create a C/C++ file in the `src` folder and start developing.
+(Instructions on how to import the project into *Eclipse* are given below).
 
 
 #### Supported platforms:
@@ -20,18 +27,22 @@ That's why I came up with this solution here. Basically you can just copy the `M
 4. Connect your Teensy3.1+
 5. Run `make upload`
 
-Caveats: because of the way this `Makefile` was hacked, please avoid specifying multiple targets for `make`, e.g. don't do `make distclean all` but `make distclean` && `make all` or the like. This situation will likely improve in the future.
+Caveats: because of the way this `Makefile` was hacked, please avoid specifying
+multiple targets for `make`, e.g. don't do `make distclean all` but `make distclean && make all`
+or the like. This situation will likely improve in the future.
 
 #### Makefile targets
 * `build`, `all` builds the `.hex` file without uploading
 * `upload` builds and uploads to the Teensy
 * `clean` cleans binary output
 * `distclean` cleans everything
-* `symbols` creates `$(OUT_PATH)/eclipse_cdt_symbols.xml` from definitions inside the `Makefile` for importing into Eclipse CDT
+* `symbols` creates `$(OUT_PATH)/eclipse_cdt_symbols.xml` from definitions inside
+the `Makefile` for importing into Eclipse CDT
 
 
 #### Makefile hacking
-Feel free to mess around with the `Makefile`, most likely you will only need to modify the first few lines that contain the `M_*` variables.
+Feel free to mess around with the `Makefile`, most likely you will only need to
+modify the first few lines that contain the `M_*` variables.
 
 * `M_PROJECT`: the project name and the name of the resulting `.hex` file
 * `M_CPU_CLOCK`: your CPU clock in Hz
@@ -44,9 +55,14 @@ Feel free to mess around with the `Makefile`, most likely you will only need to 
 
 
 #### Overriding Teensy3 core files
-You can create a folder called `teensy3` in your project's root for replacing/modifying Teensy3 core files. Just copy the file(s) you want to modify from your Teensy3 installation (`ARDUINO_HOME/hardware/teensy/avr/cores/teensy3`) into `teensy3` and start editing. The build process creates a folder called `teensy3.copy` that contains the vanilla core files and your modified ones.
+You can create a folder called `teensy3` in your project's root for replacing/modifying
+Teensy3 core files. Just copy the file(s) you want to modify from your Teensy3
+installation (`ARDUINO_HOME/hardware/teensy/avr/cores/teensy3`) into `teensy3`
+and start editing. The build process creates a folder called `teensy3.copy` that
+contains the vanilla core files and your modified ones.
 
-This way you can have custom USB devices or similar changes on a per-project base without having to mess around with your *Teensyduino* installation.
+This way you can have custom USB devices or similar changes on a per-project base
+without having to mess around with your *Teensyduino* installation.
 
 
 #### Usage with Eclipse
