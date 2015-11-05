@@ -1,0 +1,10 @@
+.settings/
+.cproject
+.project
+.classpath
+
+bin/
+teensy3.copy/
+
+*~
+
