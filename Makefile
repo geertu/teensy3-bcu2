@@ -101,12 +101,12 @@ endif
 # Add include folders and set source and object lists
 CPPFLAGS        += $(addprefix -I,$(INCLUDE_FOLDERS))
 TEENSY_SOURCES  := $(filter %.c %cpp,$(notdir $(filter-out \
-  $(CORE_EXCLUDES),$(CORE_FILES)) $(CORE_OVERRIDES)))
+	$(CORE_EXCLUDES),$(CORE_FILES)) $(CORE_OVERRIDES)))
 TEENSY_OBJECTS  := $(addprefix $(OUT_PATH)/,$(patsubst %.cpp,%.o,$(patsubst \
-  %.c,%.o,$(TEENSY_SOURCES))))
+	%.c,%.o,$(TEENSY_SOURCES))))
 SOURCES         := $(filter %.c %cpp,$(notdir $(call listfiles,$(SRC_PATH))))
 SOURCE_OBJECTS  := $(addprefix $(OUT_PATH)/,$(patsubst %.cpp,%.o,$(patsubst \
-  %.c,%.o,$(SOURCES))))
+	%.c,%.o,$(SOURCES))))
 
 # Intermediate library for Teensy3 core
 LIBTEENSY3          := $(OUT_PATH)/libteensy3.a
@@ -140,7 +140,7 @@ distclean: clean
 # Builds and uploads to Teensy3
 upload: $(OUT_PATH)/$(M_PROJECT).hex
 	@$(TEENSY_POST_COMPILE) -file=$(OUT_PATH)/$(M_PROJECT) -path=$(shell pwd) \
-	  -tools=$(abspath $(TOOLSPATH))
+		-tools=$(abspath $(TOOLSPATH))
 	@echo "Rebooting Teensy ..."
 	@-$(TEENSY_REBOOT)
 
@@ -151,19 +151,19 @@ symbols: $(OUT_PATH) $(OUT_PATH)/eclipse_cdt_symbols.xml
 # This one builds TEENSY3_COPY and recursively builds LIBTEENSY3
 $(TEENSY3_COPY): $(ALL_TEENSY3_FILES)
 	@for f in $(filter-out $(CORE_EXCLUDES),$(CORE_FILES));\
-    do \
-      if [ ! -e $(TEENSY3_COPY)/$$f ]; \
-      then \
-        mkdir -p `dirname $(TEENSY3_COPY)/$$f`; \
-        cp -fp $(TEENSY3_CORE_PATH)/$$f $(TEENSY3_COPY)/$$f; \
-      fi \
-    done
+		do \
+			if [ ! -e $(TEENSY3_COPY)/$$f ]; \
+			then \
+				mkdir -p `dirname $(TEENSY3_COPY)/$$f`; \
+				cp -fp $(TEENSY3_CORE_PATH)/$$f $(TEENSY3_COPY)/$$f; \
+			fi \
+		done
 	@for f in $(CORE_EXCLUDES); \
-    do \
-      if [ -e $(TEENSY3_COPY)/$$f ]; then \
-        rm $(TEENSY3_COPY)/$$f; \
-      fi \
-    done
+		do \
+			if [ -e $(TEENSY3_COPY)/$$f ]; then \
+				rm $(TEENSY3_COPY)/$$f; \
+			fi \
+		done
 	@touch $(TEENSY3_COPY)
 	@BUILD_TEENSY3_LIB=1 $(MAKE) $(LIBTEENSY3)
 
