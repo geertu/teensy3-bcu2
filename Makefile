@@ -4,7 +4,7 @@ M_PROJECT             := teensy3-blinky
 M_CPU_CLOCK           := 72000000
 # USB type
 M_USB_TYPE            := USB_SERIAL
-# Keyboard layout (what was that for?=
+# Keyboard layout (what was that for?)
 M_LAYOUT              := US_ENGLISH
 # Arduino version
 M_ARDUINO_VERSION     := 10605
@@ -50,7 +50,7 @@ else ifeq ($(M_TEENSY_VERSION),3.2)
 	M_CPU       := __MK20DX256__
 	M_LINK_DEFS := mk20dx256.ld
 else
-	$(error "Unsupported Teensy version: $(M_TEENSY)")
+	$(error "Unsupported Teensy version: $(M_TEENSY_VERSION)")
 endif
 
 # Putting the flags together
