@@ -51,7 +51,9 @@ modify the first few lines that contain the `M_*` variables.
 * `M_ARDUINO_VERSION`: Arduino software version
 * `M_TEENSYDUINO_VERSION`: Teensyduino version
 * `M_TEENSY_VERSION`: 3.0, 3.1 or 3.2
-* `M_OPTIMIZATIONS`: debugging and optimization switches
+* `M_OPT_N_WARN`: debugging, warning and optimization switches
+* `M_REPLACE_CORE`: Define and set to 1 when you have a fully custom core
+* `M_AUTO_DEPENDENCIES`: Undefine to disable automatical dependency scanning
 
 
 #### Overriding Teensy3 core files
@@ -63,6 +65,9 @@ contains the vanilla core files and your modified ones.
 
 This way you can have custom USB devices or similar changes on a per-project base
 without having to mess around with your *Teensyduino* installation.
+
+Using `M_REPLACE_CORE` allows you to only use the core files in your source tree.
+This is useful if you want to replace the whole core.
 
 
 #### Usage with Eclipse
