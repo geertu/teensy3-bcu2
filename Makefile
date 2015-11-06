@@ -28,7 +28,8 @@ TEENSY3_COPY          := teensy3.copy
 #
 # Arduino: https://www.arduino.cc/en/Main/Software
 # Teensyduino: https://www.pjrc.com/teensy/teensyduino.html
-# Original Makefile: https://github.com/rjeschke/teensy3-blink
+# Source to this Makefile: https://github.com/rjeschke/teensy3-blink
+# Reference Makefile: $ARDUINO_HOME/hardware/teensy/avr/cores/teensy3/Makefile
 #
 ################################################################################
 
@@ -251,4 +252,3 @@ $(OUT_PATH)/eclipse_cdt_symbols.xml: Makefile $(OUT_PATH)
 	@echo '</language>' >> $@
 	@echo '</section>' >> $@
 	@echo '</cdtprojectproperties>' >> $@
-
