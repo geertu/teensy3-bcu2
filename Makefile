@@ -101,7 +101,7 @@ TEENSY_POST_COMPILE := $(abspath $(TOOLSPATH))/teensy_post_compile
 TEENSY_REBOOT       := $(abspath $(TOOLSPATH))/teensy_reboot
 
 # (Public) target definitions ahead
-.PHONY: all clean coreclean depsclean distclean build upload symbols hex eep
+.PHONY: all clean coreclean depsclean distclean build upload symbols hex eep core
 
 # Same as build
 all: build
@@ -112,6 +112,8 @@ build: hex
 hex: $(OUT_PATH)/$(M_PROJECT).hex
 
 eep: $(OUT_PATH)/$(M_PROJECT).eep
+
+core: $(LIBTEENSY3)
 
 # Clean SOURCE_OBJECTS
 clean:
@@ -307,6 +309,7 @@ write_symbols = @echo "<macro><name>F_CPU</name><value>$(M_CPU_CLOCK)</value></m
 	"<macro><name>TEENSYDUINO</name><value>$(M_TEENSYDUINO_VERSION)</value></macro>" \
 	"<macro><name>TEENSY_VERSION</name><value>$(M_TEENSY_VERSION)</value></macro>" \
 	"<macro><name>TEENSY_BOARD</name><value>$(M_BOARD)</value></macro>" \
+	"<macro><name>NULL</name><value>0</value></macro>" \
 	>> $(1)
 
 .ONESHELL:
