@@ -92,7 +92,7 @@ LIBS      = -larm_cortexM4l_math -lm
 LIBTEENSY3          := $(OUT_PATH)/libteensy3.a
 
 # Tools needed
-AR                  := $(abspath $(COMPILERPATH))/arm-none-eabi-ar
+AR                  := $(abspath $(COMPILERPATH))/arm-none-eabi-gcc-ar
 CC                  := $(abspath $(COMPILERPATH))/arm-none-eabi-gcc
 CXX                 := $(abspath $(COMPILERPATH))/arm-none-eabi-g++
 OBJCOPY             := $(abspath $(COMPILERPATH))/arm-none-eabi-objcopy
