@@ -1,9 +1,9 @@
 # Name of the project, also used for naming the .hex file
-M_PROJECT             := teensy3-blinky
+M_PROJECT             := teensy3-bcu2
 # Used CPU clock
 M_CPU_CLOCK           := 72000000
 # USB type
-M_USB_TYPE            := USB_SERIAL
+M_USB_TYPE            := USB_TRIPLE_SERIAL
 # Keyboard layout (what was that for?)
 M_LAYOUT              := US_ENGLISH
 # Arduino version
