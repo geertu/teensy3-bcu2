@@ -104,7 +104,7 @@ TEENSY_REBOOT       := $(abspath $(TOOLSPATH))/teensy_reboot
 .PHONY: all clean coreclean depsclean distclean build upload symbols hex eep core
 
 # Same as build
-all: build
+all: src/version.h build
 
 # Compile and link .hex
 build: hex
@@ -117,7 +117,7 @@ core: $(LIBTEENSY3)
 
 # Clean SOURCE_OBJECTS
 clean:
-	@rm -rf $(SOURCE_OBJECTS)
+	@rm -rf $(SOURCE_OBJECTS) src/version.h
 
 # Clean LIBTEENSY3 and CORE_LIB_OBJECTS
 coreclean:
@@ -326,3 +326,5 @@ $(OUT_PATH)/eclipse_cdt_symbols.xml: Makefile $(OUT_PATH)
 	@echo '</section>' >> $@
 	@echo '</cdtprojectproperties>' >> $@
 
+src/version.h:	.git/HEAD .git/index
+	@echo "const char *gitversion = \"$(shell scripts/gitversion)\";" > $@
