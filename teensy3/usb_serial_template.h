@@ -40,6 +40,7 @@
 #define usb_serial_flush_callback	USB_SERIAL_NAME(flush_callback)
 #define usb_serial_flush_input		USB_SERIAL_NAME(flush_input)
 #define usb_serial_flush_output		USB_SERIAL_NAME(flush_output)
+#define usb_serial_get_baud		USB_SERIAL_NAME(get_baud)
 #define usb_serial_getchar		USB_SERIAL_NAME(getchar)
 #define usb_serial_instance		USB_SERIAL_NAME(instance)
 #define usb_serial_peekchar		USB_SERIAL_NAME(peekchar)
@@ -111,6 +112,10 @@ static inline void usb_serial_flush_callback(void)
 	__usb_serial_flush_callback(&usb_serial_instance);
 }
 
+static inline uint32_t usb_serial_get_baud(void)
+{
+	return usb_serial_instance.cdc_line_coding[0];
+}
 #ifdef __cplusplus
 }
 #endif
@@ -242,6 +247,7 @@ extern void serialEvent(void);
 #undef usb_serial_flush_callback
 #undef usb_serial_flush_input
 #undef usb_serial_flush_output
+#undef usb_serial_get_baud
 #undef usb_serial_getchar
 #undef usb_serial_instance
 #undef usb_serial_peekchar
