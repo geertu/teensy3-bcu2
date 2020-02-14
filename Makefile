@@ -7,9 +7,9 @@ M_USB_TYPE            := USB_SERIAL
 # Keyboard layout (what was that for?)
 M_LAYOUT              := US_ENGLISH
 # Arduino version
-M_ARDUINO_VERSION     := 10605
+M_ARDUINO_VERSION     := 10810
 # Teensyduino version
-M_TEENSYDUINO_VERSION := 125
+M_TEENSYDUINO_VERSION := 148
 # Teensy version (3.0, 3.1 or 3.2)
 M_TEENSY_VERSION      := 3.2
 # Compilation optimization, warning, debug flags
