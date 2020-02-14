@@ -1,4 +1,40 @@
-Blink for Teensy3 - Custom, simple Makefile starting point
+# BCU/2 - Board Control Unit Duo (Teensy 3.2)
+
+This is the software for the BCU/2, which is a small board to control operation
+of two development boards, e.g. on your desk, or in a board farm
+(https://github.com/geertu/pcb-bcu2).
+
+## Features
+
+  - USB host connectivity, providing three virtual serial ports:
+      - Interactive control channel (just type "help"),
+      - Serial console channel A,
+      - Serial console channel B.
+  - Power control (two channels),
+  - Voltage/current/power monitor (two channels),
+  - Serial console (two channels),
+  - Opto-isolator output control (six channels),
+  - RGB status LED control (two channels),
+  - GPIO expansion control (two channels),
+  - Test mode exercising all outputs.
+
+## Features still to be implemented
+
+  - Environment in non-volatile memory (currently hardcoded),
+  - Triggers for RGB status LEDs,
+  - Better power monitoring,
+  - I2C expansion,
+  - ...
+
+## License
+
+  - Mix of material licensed under MIT, PJRC, LGPL-2.1+, and GPL-2.0 licenses.
+
+---
+
+Instructions below copied verbatim from "Blink for Teensy3 - Custom, simple
+Makefile starting point" (https://github.com/rjeschke/teensy3-blink)
+
 ---
 
 #### Another Blink?
