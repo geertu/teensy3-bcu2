@@ -184,11 +184,13 @@ static void cmd_rgb(int argc, char *argv[])
 				rgb = rgb_colors[i].rgb;
 				goto found;
 			}
+		printf("Unknown color %s\n", color);
+		return;
 	}
 
 	n = strlen(color);
 	if (n != 4 && n != 7) {
-		printf("Unknown color %s\n", color);
+		printf("Invalid RGB color %s\n", color);
 		return;
 	}
 
