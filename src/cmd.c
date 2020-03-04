@@ -160,7 +160,8 @@ static void cmd_rgb(int argc, char *argv[])
 
 	if (argc == 1 && !part_strncasecmp(argv[0], "list", 1)) {
 		for (i = 0; rgb_colors[i].name; i++)
-			printf("%s\n", rgb_colors[i].name);
+			printf("#%06x %s\n", rgb_colors[i].rgb,
+			       rgb_colors[i].name);
 		return;
 	}
 
