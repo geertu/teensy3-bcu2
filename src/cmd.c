@@ -152,6 +152,7 @@ static int decode_hex_char(char c)
 
 static void cmd_rgb(int argc, char *argv[])
 {
+	static unsigned int cache[NUM_RGB_CH];
 	unsigned int rgb = 0, i;
 	const char *color;
 	size_t n;
@@ -163,8 +164,8 @@ static void cmd_rgb(int argc, char *argv[])
 		return;
 	}
 
-	if (argc != 2 || !part_strncasecmp(argv[0], "help", 1)) {
-		printf("Usage: rgb <list> | <channel> { <colorname> | #rgb | #rrggbb }\n\n");
+	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: rgb <list> | <channel> [<colorname> | #rgb | #rrggbb]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_RGB_CH - 1, NUM_RGB_CH - 1);
 		return;
@@ -173,6 +174,12 @@ static void cmd_rgb(int argc, char *argv[])
 	ch = decode_channel(argv[0], NUM_RGB_CH);
 	if (ch < -1) {
 		printf("Invalid RGB channel %s\n", argv[0]);
+		return;
+	}
+
+	if (argc < 2) {
+		for_each_selected_channel(i, ch, NUM_RGB_CH)
+			printf("#%06x\n", cache[i]);
 		return;
 	}
 
@@ -207,18 +214,21 @@ static void cmd_rgb(int argc, char *argv[])
 
 found:
 	printf("Showing color %s\n", color);
-	for_each_selected_channel(i, ch, NUM_RGB_CH)
+	for_each_selected_channel(i, ch, NUM_RGB_CH) {
 		rgb_write(i, rgb);
+		cache[i] = rgb;
+	}
 	return;
 }
 
 static void cmd_power(int argc, char *argv[])
 {
+	static char cache[NUM_POWER_CH];
 	unsigned int i;
 	int ch, state;
 
-	if (argc != 2 || !part_strncasecmp(argv[0], "help", 1)) {
-		printf("Usage: power <channel> <state>\n\n");
+	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: power <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_POWER_CH - 1, NUM_POWER_CH - 1);
 		printf("Valid states are ON|OFF|1|0\n");
@@ -228,6 +238,12 @@ static void cmd_power(int argc, char *argv[])
 	ch = decode_channel(argv[0], NUM_POWER_CH);
 	if (ch < -1) {
 		printf("Invalid power channel %s\n", argv[0]);
+		return;
+	}
+
+	if (argc < 2) {
+		for_each_selected_channel(i, ch, NUM_POWER_CH)
+			printf("%d\n", cache[i]);
 		return;
 	}
 
@@ -245,6 +261,7 @@ static void cmd_power(int argc, char *argv[])
 		printf("Powering channel %c %s\n", 'A' + i,
 		       state ? "on" : "off");
 		digitalWrite(pin_power[i], state);
+		cache[i] = state;
 	}
 }
 
@@ -258,12 +275,13 @@ enum key_state {
 
 static void cmd_key(int argc, char *argv[])
 {
+	static char cache[NUM_KEY_CH];
 	enum key_state state;
 	unsigned int i;
 	int ch;
 
-	if (argc != 2 || !part_strncasecmp(argv[0], "help", 1)) {
-		printf("Usage: keys <channel> <state>\n\n");
+	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: keys <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_KEY_CH - 1, NUM_KEY_CH - 1);
 		printf("Valid states are ON|OFF|PULSE|1|0\n");
@@ -273,6 +291,12 @@ static void cmd_key(int argc, char *argv[])
 	ch = decode_channel(argv[0], NUM_KEY_CH);
 	if (ch < -1) {
 		printf("Invalid key %s\n", argv[0]);
+		return;
+	}
+
+	if (argc < 2) {
+		for_each_selected_channel(i, ch, NUM_KEY_CH)
+			printf("%d\n", cache[i]);
 		return;
 	}
 
@@ -294,11 +318,13 @@ static void cmd_key(int argc, char *argv[])
 		case KEY_ON:
 			printf("Switching key %c %s\n", '0' + i, "on");
 			digitalWrite(pin_key[i], 0);
+			cache[i] = 1;
 			break;
 
 		case KEY_OFF:
 			printf("Switching key %c %s\n", '0' + i, "off");
 			digitalWrite(pin_key[i], 1);
+			cache[i] = 0;
 			break;
 
 		case KEY_PULSE:
@@ -306,6 +332,7 @@ static void cmd_key(int argc, char *argv[])
 			digitalWrite(pin_key[i], 0);
 			delay(KEY_PULSE_MS);
 			digitalWrite(pin_key[i], 1);
+			cache[i] = 0;
 			break;
 		}
 	}
@@ -313,11 +340,12 @@ static void cmd_key(int argc, char *argv[])
 
 static void cmd_gpio(int argc, char *argv[])
 {
+	static char cache[NUM_GPIO_CH];
 	enum key_state state;
 	unsigned int i;
 	int ch;
 
-	if (argc != 2 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
 		printf("Usage: gpio <channel> <state>\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_GPIO_CH - 1, NUM_GPIO_CH - 1);
@@ -328,6 +356,12 @@ static void cmd_gpio(int argc, char *argv[])
 	ch = decode_channel(argv[0], NUM_GPIO_CH);
 	if (ch < -1) {
 		printf("Invalid gpio %s\n", argv[0]);
+		return;
+	}
+
+	if (argc < 2) {
+		for_each_selected_channel(i, ch, NUM_GPIO_CH)
+			printf("%d\n", cache[i]);
 		return;
 	}
 
@@ -348,11 +382,13 @@ static void cmd_gpio(int argc, char *argv[])
 		case KEY_ON:
 			printf("Switching GPIO %c %s\n", '0' + i, "on");
 			digitalWrite(pin_gpio[i], 1);
+			cache[i] = 1;
 			break;
 
 		case KEY_OFF:
 			printf("Switching GPIO %c %s\n", '0' + i, "off");
 			digitalWrite(pin_gpio[i], 0);
+			cache[i] = 0;
 			break;
 
 		case KEY_PULSE:
@@ -360,6 +396,7 @@ static void cmd_gpio(int argc, char *argv[])
 			digitalWrite(pin_gpio[i], 1);
 			delay(KEY_PULSE_MS);
 			digitalWrite(pin_gpio[i], 0);
+			cache[i] = 0;
 			break;
 		}
 	}
