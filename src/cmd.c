@@ -53,6 +53,26 @@ static int decode_channel(const char *s, unsigned int n)
 	return -2;
 }
 
+enum state {
+	STATE_OFF = 0,
+	STATE_ON,
+	STATE_PULSE
+};
+
+static int decode_state(const char *s, int allow_pulse)
+{
+	if (!part_strncasecmp(s, "ON", 2) || !strcmp(s, "1"))
+		return STATE_ON;
+
+	if (!part_strncasecmp(s, "OFF", 2) || !strcmp(s, "0"))
+		return STATE_OFF;
+
+	if (allow_pulse && !part_strncasecmp(s, "PULSE", 1))
+		return STATE_PULSE;
+
+	return -1;
+}
+
 static void cmd_help(int argc, char *argv[])
 {
 	const struct cmd *cmd;
@@ -248,12 +268,8 @@ static void cmd_power(int argc, char *argv[])
 		return;
 	}
 
-	if (!part_strncasecmp(argv[1], "ON", 2) || !strcmp(argv[1], "1")) {
-		state = 1;
-	} else if (!part_strncasecmp(argv[1], "OFF", 2) ||
-		   !strcmp(argv[1], "0")) {
-		state = 0;
-	} else {
+	state = decode_state(argv[1], false);
+	if (state < 0) {
 		printf("Invalid power state %s\n", argv[1]);
 		return;
 	}
@@ -268,18 +284,11 @@ static void cmd_power(int argc, char *argv[])
 
 #define KEY_PULSE_MS	200
 
-enum key_state {
-	KEY_ON,
-	KEY_OFF,
-	KEY_PULSE,
-};
-
 static void cmd_key(int argc, char *argv[])
 {
 	static char cache[NUM_KEY_CH];
-	enum key_state state;
 	unsigned int i;
-	int ch;
+	int ch, state;
 
 	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
 		printf("Usage: keys <channel> [<state>]\n\n");
@@ -301,14 +310,8 @@ static void cmd_key(int argc, char *argv[])
 		return;
 	}
 
-	if (!part_strncasecmp(argv[1], "ON", 2) || !strcmp(argv[1], "1")) {
-		state = KEY_ON;
-	} else if (!part_strncasecmp(argv[1], "OFF", 2) ||
-		   !strcmp(argv[1], "0")) {
-		state = KEY_OFF;
-	} else if (!part_strncasecmp(argv[1], "PULSE", 1)) {
-		state = KEY_PULSE;
-	} else {
+	state = decode_state(argv[1], true);
+	if (state < 0) {
 		printf("Invalid key state %s\n", argv[1]);
 		return;
 	}
@@ -316,19 +319,19 @@ static void cmd_key(int argc, char *argv[])
 	for_each_selected_channel(i, ch, NUM_KEY_CH) {
 		/* Keys are active-low! */
 		switch (state) {
-		case KEY_ON:
+		case STATE_ON:
 			printf("Switching key %c %s\n", '0' + i, "on");
 			digitalWrite(pin_key[i], 0);
 			cache[i] = 1;
 			break;
 
-		case KEY_OFF:
+		case STATE_OFF:
 			printf("Switching key %c %s\n", '0' + i, "off");
 			digitalWrite(pin_key[i], 1);
 			cache[i] = 0;
 			break;
 
-		case KEY_PULSE:
+		case STATE_PULSE:
 			printf("Pulsing key %c\n", '0' + i);
 			digitalWrite(pin_key[i], 0);
 			delay(KEY_PULSE_MS);
@@ -342,9 +345,8 @@ static void cmd_key(int argc, char *argv[])
 static void cmd_gpio(int argc, char *argv[])
 {
 	static char cache[NUM_GPIO_CH];
-	enum key_state state;
 	unsigned int i;
-	int ch;
+	int ch, state;
 
 	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
 		printf("Usage: gpio <channel> <state>\n\n");
@@ -366,33 +368,27 @@ static void cmd_gpio(int argc, char *argv[])
 		return;
 	}
 
-	if (!part_strncasecmp(argv[1], "ON", 2) || !strcmp(argv[1], "1")) {
-		state = KEY_ON;
-	} else if (!part_strncasecmp(argv[1], "OFF", 2) ||
-		   !strcmp(argv[1], "0")) {
-		state = KEY_OFF;
-	} else if (!part_strncasecmp(argv[1], "PULSE", 1)) {
-		state = KEY_PULSE;
-	} else {
+	state = decode_state(argv[1], true);
+	if (state < 0) {
 		printf("Invalid gpio state %s\n", argv[1]);
 		return;
 	}
 
 	for_each_selected_channel(i, ch, NUM_GPIO_CH) {
 		switch (state) {
-		case KEY_ON:
+		case STATE_ON:
 			printf("Switching GPIO %c %s\n", '0' + i, "on");
 			digitalWrite(pin_gpio[i], 1);
 			cache[i] = 1;
 			break;
 
-		case KEY_OFF:
+		case STATE_OFF:
 			printf("Switching GPIO %c %s\n", '0' + i, "off");
 			digitalWrite(pin_gpio[i], 0);
 			cache[i] = 0;
 			break;
 
-		case KEY_PULSE:
+		case STATE_PULSE:
 			printf("Pulsing GPIO %c\n", '0' + i);
 			digitalWrite(pin_gpio[i], 1);
 			delay(KEY_PULSE_MS);
