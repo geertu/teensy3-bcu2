@@ -30,17 +30,17 @@ struct cmd {
 
 static struct cmd commands[];
 
-static int decode_channel(const char *s, unsigned int n)
+static int decode_channel(const char *arg, const char *name, unsigned int n)
 {
 	char c;
 
-	if (!part_strncasecmp(s, "ALL", 2))
+	if (!part_strncasecmp(arg, "ALL", 2))
 		return -1;
 
-	if (s[1])
-		return -2;
+	if (arg[1])
+		goto error;
 
-	c = s[0];
+	c = arg[0];
 	if (c >= '0' && c < '0' + n)
 		return c - '0';
 
@@ -50,6 +50,8 @@ static int decode_channel(const char *s, unsigned int n)
 	if (c >= 'a' && c < 'a' + n)
 		return c - 'a';
 
+error:
+	printf("Invalid %s channel %s\n", name, arg);
 	return -2;
 }
 
@@ -192,11 +194,9 @@ static void cmd_rgb(int argc, char *argv[])
 		return;
 	}
 
-	ch = decode_channel(argv[0], NUM_RGB_CH);
-	if (ch < -1) {
-		printf("Invalid RGB channel %s\n", argv[0]);
+	ch = decode_channel(argv[0], "rgb", NUM_RGB_CH);
+	if (ch < -1)
 		return;
-	}
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_RGB_CH)
@@ -256,11 +256,9 @@ static void cmd_power(int argc, char *argv[])
 		return;
 	}
 
-	ch = decode_channel(argv[0], NUM_POWER_CH);
-	if (ch < -1) {
-		printf("Invalid power channel %s\n", argv[0]);
+	ch = decode_channel(argv[0], "power", NUM_POWER_CH);
+	if (ch < -1)
 		return;
-	}
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_POWER_CH)
@@ -298,11 +296,9 @@ static void cmd_key(int argc, char *argv[])
 		return;
 	}
 
-	ch = decode_channel(argv[0], NUM_KEY_CH);
-	if (ch < -1) {
-		printf("Invalid key %s\n", argv[0]);
+	ch = decode_channel(argv[0], "key", NUM_KEY_CH);
+	if (ch < -1)
 		return;
-	}
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_KEY_CH)
@@ -356,11 +352,9 @@ static void cmd_gpio(int argc, char *argv[])
 		return;
 	}
 
-	ch = decode_channel(argv[0], NUM_GPIO_CH);
-	if (ch < -1) {
-		printf("Invalid gpio %s\n", argv[0]);
+	ch = decode_channel(argv[0], "gpio", NUM_GPIO_CH);
+	if (ch < -1)
 		return;
-	}
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_GPIO_CH)
