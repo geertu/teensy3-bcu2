@@ -123,6 +123,7 @@ void usb_serial_event(void)
 			input_len--;
 			break;
 
+		case '\n':
 		case '\r':
 			/* Enter */
 			printf("\n");
