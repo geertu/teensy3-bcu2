@@ -61,17 +61,18 @@ enum state {
 	STATE_PULSE
 };
 
-static int decode_state(const char *s, int allow_pulse)
+static int decode_state(const char *arg, const char *name, int allow_pulse)
 {
-	if (!part_strncasecmp(s, "ON", 2) || !strcmp(s, "1"))
+	if (!part_strncasecmp(arg, "ON", 2) || !strcmp(arg, "1"))
 		return STATE_ON;
 
-	if (!part_strncasecmp(s, "OFF", 2) || !strcmp(s, "0"))
+	if (!part_strncasecmp(arg, "OFF", 2) || !strcmp(arg, "0"))
 		return STATE_OFF;
 
-	if (allow_pulse && !part_strncasecmp(s, "PULSE", 1))
+	if (allow_pulse && !part_strncasecmp(arg, "PULSE", 1))
 		return STATE_PULSE;
 
+	printf("Invalid %s state %s\n", name, arg);
 	return -1;
 }
 
@@ -266,11 +267,9 @@ static void cmd_power(int argc, char *argv[])
 		return;
 	}
 
-	state = decode_state(argv[1], false);
-	if (state < 0) {
-		printf("Invalid power state %s\n", argv[1]);
+	state = decode_state(argv[1], "power", false);
+	if (state < 0)
 		return;
-	}
 
 	for_each_selected_channel(i, ch, NUM_POWER_CH) {
 		printf("Powering channel %c %s\n", 'A' + i,
@@ -306,11 +305,9 @@ static void cmd_key(int argc, char *argv[])
 		return;
 	}
 
-	state = decode_state(argv[1], true);
-	if (state < 0) {
-		printf("Invalid key state %s\n", argv[1]);
+	state = decode_state(argv[1], "key", true);
+	if (state < 0)
 		return;
-	}
 
 	for_each_selected_channel(i, ch, NUM_KEY_CH) {
 		/* Keys are active-low! */
@@ -362,11 +359,9 @@ static void cmd_gpio(int argc, char *argv[])
 		return;
 	}
 
-	state = decode_state(argv[1], true);
-	if (state < 0) {
-		printf("Invalid gpio state %s\n", argv[1]);
+	state = decode_state(argv[1], "gpio", true);
+	if (state < 0)
 		return;
-	}
 
 	for_each_selected_channel(i, ch, NUM_GPIO_CH) {
 		switch (state) {
