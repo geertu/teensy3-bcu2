@@ -235,8 +235,8 @@ static void cmd_rgb(int argc, char *argv[])
 	}
 
 found:
-	printf("Showing color %s\n", color);
 	for_each_selected_channel(i, ch, NUM_RGB_CH) {
+		printf("Showing color %s on channel %c\n", color, 'A' + i);
 		rgb_write(i, rgb);
 		cache[i] = rgb;
 	}
