@@ -31,9 +31,7 @@ uint8_t twi_writeTo(uint8_t address, uint8_t *data, uint8_t length,
 	Wire.beginTransmission(address);
 	for (i = 0; i < length; i++)
 		Wire.write(data[i]);
-	Wire.endTransmission(sendStop ? I2C_STOP : I2C_NOSTOP, 1000000);
-
-	return 0;
+	return Wire.endTransmission(sendStop ? I2C_STOP : I2C_NOSTOP, 1000000);
 }
 
 void twi_stop(void)
