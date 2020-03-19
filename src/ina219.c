@@ -14,7 +14,7 @@
 #include "print.h"
 
 // INA219 I2C address base
-#define INA219_BASE		      0x40 // Up to 4 INA19s */
+#define INA219_BASE		      0x40 // Up to 4 devices */
 
 #define INA219_CFG		      0x00 // Configuration
 #define INA219_SHUNT_V		      0x01 // Shunt Voltage
