@@ -292,7 +292,7 @@ int ina219_get_bus_mV(unsigned int ch)
 
 	do {
 		x = ina219_read(ch, INA219_BUS_V);
-	pr_debug("INA219_BUS_V   = 0x%04x\n", x);
+		pr_debug("INA219_BUS_V   = 0x%04x\n", x);
 		if (x < 0)
 			return x;
 	} while (!(x & INA219_BUS_V_CNVR));
