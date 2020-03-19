@@ -48,7 +48,7 @@ static inline __printf(1, 2) int dummy_printf(const char *fmt, ...)
 #define pr_err(fmt, ...)	printf(ESC_RED fmt ESC_NORMAL, ##__VA_ARGS__)
 
 #ifdef DEBUG
-#define pr_debug		printf(ESC_BLUE fmt ESC_NORMAL, ##__VA_ARGS__)
+#define pr_debug(fmt, ...)	printf(ESC_BLUE fmt ESC_NORMAL, ##__VA_ARGS__)
 #else
 #define pr_debug		dummy_printf
 #endif
