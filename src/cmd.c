@@ -438,6 +438,11 @@ void cmd_run(char *line)
 	if (!argc)
 		goto prompt;
 
+	if (*line) {
+		printf("Too many arguments (max = %u)\n", ARGV_MAX);
+		goto prompt;
+	}
+
 	if (argv[0][0] == '?') {
 		cmd_help(argc - 1, argv + 1);
 		goto prompt;
