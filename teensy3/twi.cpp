@@ -12,7 +12,8 @@ uint8_t twi_readFrom(uint8_t address, uint8_t *data, uint8_t length,
 	unsigned int i;
 	size_t n;
 
-	n = Wire.requestFrom(address, length, I2C_STOP, 1000000);
+	n = Wire.requestFrom(address, length, sendStop ? I2C_STOP : I2C_NOSTOP,
+			     1000000);
 	if (!n)
 		return 0;
 
@@ -30,7 +31,7 @@ uint8_t twi_writeTo(uint8_t address, uint8_t *data, uint8_t length,
 	Wire.beginTransmission(address);
 	for (i = 0; i < length; i++)
 		Wire.write(data[i]);
-	Wire.endTransmission(I2C_STOP, 1000000);
+	Wire.endTransmission(sendStop ? I2C_STOP : I2C_NOSTOP, 1000000);
 
 	return 0;
 }
