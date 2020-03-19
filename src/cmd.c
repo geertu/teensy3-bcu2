@@ -8,6 +8,8 @@
 //
 
 #include <ctype.h>
+#include <stdlib.h>
+#include <twi.h>
 #include <usb_names.h>
 
 #include "board.h"
@@ -19,6 +21,9 @@
 #include "version.h"
 
 #define ARGV_MAX	10
+
+#define I2C_ADDR_FIRST	0x03	/* First address to scan on the I2C bus */
+#define I2C_ADDR_LAST	0x77	/* Last address to scan on the I2C bus */
 
 int cmd_mode = CMD_COMMAND;
 
@@ -388,10 +393,141 @@ static void cmd_gpio(int argc, char *argv[])
 	}
 }
 
+static void cmd_i2c_scan(void)
+{
+	unsigned int i, n;
+	int res;
+
+	for (i = I2C_ADDR_FIRST, n = 0; i <= I2C_ADDR_LAST; i++) {
+		res = twi_writeTo(i, NULL, 0, true, true);
+		switch (res) {
+		case 0:
+			printf("Found I2C device at address 0x%02x\n", i);
+			n++;
+			break;
+
+		case 2:	/* recv addr NACK */
+			break;
+
+		default:
+			pr_err("I2C bus failure\n");
+			return;
+		}
+	}
+
+	if (!n)
+		printf("No I2C devices found\n");
+}
+
+static void cmd_i2c_get(int argc, char *argv[])
+{
+	unsigned int addr, n = 1;
+	uint8_t reg, buf[4];
+	int res;
+
+	if (argc < 1 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: i2c get <addr> [<reg> [b|w|l]]\n");
+		return;
+	}
+
+	addr = strtoul(argv[0], NULL, 0);
+
+	if (argc > 1)
+		reg = strtoul(argv[1], NULL, 0);
+
+	if (argc > 2) {
+		switch (argv[2][0]) {
+		case 'b':
+			n = 1;
+			break;
+		case 'w':
+			n = 2;
+			break;
+		case 'l':
+			n = 4;
+			break;
+		default:
+			printf("Invalid mode %s\n", argv[2]);
+			return;
+		}
+		if (argv[2][1]) {
+			printf("Invalid mode %s\n", argv[2]);
+			return;
+		}
+	}
+
+	if (argc > 1) {
+		res = twi_writeTo(addr, &reg, 1, true, false);
+		if (res) {
+			pr_err("I2C write failed %d\n", res);
+			return;
+		}
+	}
+
+	res = twi_readFrom(addr, buf, n, true);
+	if (res != n) {
+		pr_err("I2C read returned only %d bytes\n", res);
+		return;
+	}
+
+	switch (n) {
+	case 1:
+		printf("0x%02x\n", buf[0]);
+		break;
+	case 2:
+		printf("0x%04x\n", buf[0] << 8 |  buf[1]);
+		break;
+	case 4:
+		printf("0x%08x\n",
+		       buf[0] << 24 |  buf[1] << 16 | buf[2] << 8 | buf[3]);
+		break;
+	}
+}
+
+static void cmd_i2c_set(int argc, char *argv[])
+{
+	uint8_t data[ARGV_MAX - 3];
+	unsigned int addr, i;
+	int res;
+
+	if (argc < 1 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: i2c set <addr> [<reg> [<data> ...]]\n");
+		return;
+	}
+
+	addr = strtoul(argv[0], NULL, 0);
+
+	for (i = 0; i < argc - 1; i++)
+		data[i] = strtoul(argv[i + 1], NULL, 0);
+
+	res = twi_writeTo(addr, data, argc - 1, true, true);
+	if (res)
+		pr_err("I2C write failed %d\n", res);
+}
+
+static void cmd_i2c(int argc, char *argv[])
+{
+	if (argc < 1 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: i2c <cmd> ...\n\n");
+		printf("Valid commands are: Scan, Get, SEt\n");
+		return;
+	}
+
+	if (!part_strncasecmp(argv[0], "scan", 1))
+		cmd_i2c_scan();
+	else if (!part_strncasecmp(argv[0], "get", 1))
+		cmd_i2c_get(argc - 1, argv + 1);
+	else if (!part_strncasecmp(argv[0], "set", 1))
+		cmd_i2c_set(argc - 1, argv + 1);
+	else
+		printf("Unknown I2C command %s\n", argv[0]);
+}
+
 static struct cmd commands[] = {
 	{ "Getenv", "Get the value of an environment variable", cmd_getenv },
 	{ "GPio", "Control GPIO", cmd_gpio },
 	{ "Help", "Display this help", cmd_help },
+	{ "I2c", "I2C tools", cmd_i2c },
 	{ "Key", "Control key", cmd_key },
 	{ "Monitor", "Monitor power consumption", cmd_monitor },
 	{ "Power", "Control power", cmd_power },
