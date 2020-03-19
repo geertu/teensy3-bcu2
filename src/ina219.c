@@ -94,7 +94,7 @@ static int ina219_read(unsigned int ch, uint8_t reg)
 	uint8_t buf[2];
 	int res;
 
-	res = twi_writeTo(INA219_BASE + ch, &reg, 1, true, true);
+	res = twi_writeTo(INA219_BASE + ch, &reg, 1, true, false);
 	pr_debug("twi_writeTo() returned %u\n", res);
 	if (res) {
 		pr_err("%s: twi_writeTo() returned error %d\n", __func__, res);
