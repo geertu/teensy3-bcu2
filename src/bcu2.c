@@ -89,6 +89,11 @@ static void console_init(void)
 
 #define LINE_MAX	80
 
+static void bell(void)
+{
+	putchar('\a');
+}
+
 void usb_serial_event(void)
 {
 	static char input_buf[LINE_MAX + 1];
@@ -115,7 +120,7 @@ void usb_serial_event(void)
 		case 0x7f:
 			/* Backspace */
 			if (!input_len) {
-				putchar('\a');
+				bell();
 				break;
 			}
 
@@ -135,7 +140,7 @@ void usb_serial_event(void)
 		case ' '...'~':
 			/* Vanilla characters */
 			if (input_len >= sizeof(input_buf) - 1) {
-				putchar('\a');
+				bell();
 				break;
 			}
 
