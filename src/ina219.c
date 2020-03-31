@@ -209,7 +209,7 @@ static void ina219_dump_config(uint16_t cfg)
 		break;
 	}
 
-	pr_info("INA219_CFG           = 0x%x\n", cfg);
+	pr_info("INA219_CFG           = %#x\n", cfg);
 	pr_info("Bus Voltage Range    = %2u\n", brng);
 	pr_info("Shunt Voltage Gain   = %2u\n", gain);
 	pr_info("Bus ADC resolution   = %2u\n", bus_bits);
@@ -254,7 +254,7 @@ int ina219_init(unsigned int ch)
 		ina219_config = x;
 		ina219_dump_config(x);
 	} else if (x != ina219_config) {
-		pr_err("INA219_CFG mismatch: ch0 0x%x ch1 0x%x\n",
+		pr_err("INA219_CFG mismatch: ch0 %#x ch1 %#x\n",
 		       ina219_config, x);
 		ina219_dump_config(x);
 	}
@@ -263,7 +263,7 @@ int ina219_init(unsigned int ch)
 	if (x < 0)
 		return x;
 
-	pr_debug("INA219_CALIB         = 0x%04x/%u\n", x, x);
+	pr_debug("INA219_CALIB         = %#04x/%u\n", x, x);
 
 	ina219_write(ch, INA219_CALIB, ina219_calib);
 
@@ -271,7 +271,7 @@ int ina219_init(unsigned int ch)
 	if (x < 0)
 		return x;
 
-	pr_debug("INA219_CALIB         = 0x%04x/%u (NEW)\n", x, x);
+	pr_debug("INA219_CALIB         = %#04x/%u (NEW)\n", x, x);
 
 	return 0;
 }
@@ -279,7 +279,7 @@ int ina219_init(unsigned int ch)
 int ina219_get_shunt_uV(unsigned int ch)
 {
 	int x = ina219_read(ch, INA219_SHUNT_V);
-	pr_debug("INA219_SHUNT_V = 0x%04x\n", x);
+	pr_debug("INA219_SHUNT_V = %#04x\n", x);
 	if (x < 0)
 		return x;
 
@@ -292,7 +292,7 @@ int ina219_get_bus_mV(unsigned int ch)
 
 	do {
 		x = ina219_read(ch, INA219_BUS_V);
-		pr_debug("INA219_BUS_V   = 0x%04x\n", x);
+		pr_debug("INA219_BUS_V   = %#04x\n", x);
 		if (x < 0)
 			return x;
 	} while (!(x & INA219_BUS_V_CNVR));
@@ -307,7 +307,7 @@ int ina219_get_bus_mV(unsigned int ch)
 int ina219_get_power_mW(unsigned int ch)
 {
 	int x = ina219_read(ch, INA219_POWER);
-	pr_debug("INA219_POWER   = 0x%04x\n", x);
+	pr_debug("INA219_POWER   = %#04x\n", x);
 	if (x < 0)
 		return x;
 
@@ -317,7 +317,7 @@ int ina219_get_power_mW(unsigned int ch)
 int ina219_get_current_mA(unsigned int ch)
 {
 	int x = ina219_read(ch, INA219_CURRENT);
-	pr_debug("INA219_CURRENT = 0x%04x\n", x);
+	pr_debug("INA219_CURRENT = %#04x\n", x);
 	if (x < 0)
 		return x;
 

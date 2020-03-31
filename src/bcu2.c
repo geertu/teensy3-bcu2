@@ -149,7 +149,7 @@ void usb_serial_event(void)
 			break;
 
 		default:
-			pr_warn("Unhandled special character 0x%x\n", c);
+			pr_warn("Unhandled special character %#x\n", c);
 			break;
 		}
 	}

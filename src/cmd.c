@@ -402,7 +402,7 @@ static void cmd_i2c_scan(void)
 		res = twi_writeTo(i, NULL, 0, true, true);
 		switch (res) {
 		case 0:
-			printf("Found I2C device at address 0x%02x\n", i);
+			printf("Found I2C device at address %#02x\n", i);
 			n++;
 			break;
 
@@ -472,13 +472,13 @@ static void cmd_i2c_get(int argc, char *argv[])
 
 	switch (n) {
 	case 1:
-		printf("0x%02x\n", buf[0]);
+		printf("%#02x\n", buf[0]);
 		break;
 	case 2:
-		printf("0x%04x\n", buf[0] << 8 |  buf[1]);
+		printf("%#04x\n", buf[0] << 8 |  buf[1]);
 		break;
 	case 4:
-		printf("0x%08x\n",
+		printf("%#08x\n",
 		       buf[0] << 24 |  buf[1] << 16 | buf[2] << 8 | buf[3]);
 		break;
 	}
