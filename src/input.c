@@ -7,6 +7,8 @@
 // License, version 2.
 //
 
+#include <ctype.h>
+
 #include "cmd.h"
 #include "input.h"
 #include "print.h"
@@ -36,8 +38,16 @@ static void move_left(unsigned int n)
 		putchar('\b');
 }
 
+static void spaces(unsigned int n)
+{
+	while (n--)
+		putchar(' ');
+}
+
 void input_handle(char c)
 {
+	unsigned int n;
+
 	if (c == '\003') {
 		/* CTRL-C */
 		cmd_prompt();
@@ -63,14 +73,8 @@ void input_handle(char c)
 				break;
 			}
 
-			memmove(&input_buf[input_pos - 1],
-				&input_buf[input_pos], input_len - input_pos);
-			input_pos--;
-			input_len--;
-			input_buf[input_len] = 0;
-			printf("\b%s ", &input_buf[input_pos]);
-			move_left(input_len - input_pos + 1);
-			break;
+			n = 1;
+			goto do_kill_word;
 
 		case '\n':
 		case '\r':
@@ -96,6 +100,30 @@ void input_handle(char c)
 		case 0x05:
 			/* CTRL-E */
 			goto do_end;
+
+		case 0x17:
+			/* CTRL-W */
+			if (!input_pos) {
+				bell();
+				break;
+			}
+
+			for (n = 1; n < input_pos; n++) {
+				if (isspace(input_buf[input_pos - n - 1]))
+					break;
+			}
+
+do_kill_word:
+			memmove(&input_buf[input_pos - n],
+				&input_buf[input_pos], input_len - input_pos);
+			input_pos -= n;
+			input_len -= n;
+			input_buf[input_len] = 0;
+			move_left(n);
+			printf("%s", &input_buf[input_pos]);
+			spaces(n);
+			move_left(input_len - input_pos + n);
+			break;
 
 		case ' '...'~':
 			/* Vanilla characters */
