@@ -125,6 +125,9 @@ do_kill_word:
 			move_left(input_len - input_pos + n);
 			break;
 
+		case '\t':
+			c = ' ';
+			/* fall through */
 		case ' '...'~':
 			/* Vanilla characters */
 			if (input_len >= sizeof(input_buf) - 1) {
