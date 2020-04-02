@@ -14,6 +14,7 @@
 #include "print.h"
 
 #define LINE_MAX	80
+#define HIST_MAX	20
 
 enum input_state {
 	INPUT_NORMAL,
@@ -26,6 +27,11 @@ static enum input_state state = INPUT_NORMAL;
 static char input_buf[LINE_MAX + 1];
 static unsigned int input_len;	/* Number of characters in input buffer */
 static unsigned int input_pos;	/* Current cursor position in input buffer */
+
+static char hist_buf[HIST_MAX][LINE_MAX + 1];
+static unsigned int hist_len;	/* Number of entries in history */
+static unsigned int hist_idx;	/* Index to write next history entry */
+static unsigned int hist_off;	/* Look-up read offset relative to index */
 
 static void bell(void)
 {
@@ -42,6 +48,14 @@ static void spaces(unsigned int n)
 {
 	while (n--)
 		putchar(' ');
+}
+
+static int isspaces(const char *s)
+{
+	while (isspace(*s))
+		s++;
+
+	return !*s;
 }
 
 void input_handle(char c)
@@ -80,6 +94,18 @@ void input_handle(char c)
 		case '\r':
 			/* Enter */
 			printf("\n");
+			if (!isspaces(input_buf)) {
+				if (!hist_len ||
+				    strcmp(hist_buf[hist_idx ? hist_idx - 1
+							     : HIST_MAX - 1],
+					   input_buf)) {
+					strcpy(hist_buf[hist_idx], input_buf);
+					hist_idx = (hist_idx + 1) % HIST_MAX;
+					if (hist_len < HIST_MAX)
+						hist_len++;
+				}
+				hist_off = 0;
+			}
 			cmd_run(input_buf);
 			input_len = input_pos = 0;
 			input_buf[0] = 0;
@@ -226,13 +252,41 @@ do_end:
 		case 'A':
 			/* Up */
 			state = INPUT_NORMAL;
-			pr_debug("Up!\n");
-			break;
+			if (hist_off == hist_len) {
+				bell();
+				break;
+			}
+
+			hist_off++;
+			goto do_hist;
 
 		case 'B':
 			/* Down */
 			state = INPUT_NORMAL;
-			pr_debug("Down!\n");
+			if (!hist_off) {
+				bell();
+				break;
+			}
+
+			hist_off--;
+do_hist:
+			if (!hist_off) {
+				input_buf[0] = 0;
+			} else {
+				n = hist_idx - hist_off;
+				if (hist_idx < hist_off)
+					n += HIST_MAX;
+				strcpy(input_buf, hist_buf[n]);
+			}
+			n = input_len;
+			input_len = strlen(input_buf);
+			move_left(input_pos);
+			printf("%s", input_buf);
+			if (n > input_len) {
+				spaces(n - input_len);
+				move_left(n - input_len);
+			}
+			input_pos = input_len;
 			break;
 
 		case 'C':
