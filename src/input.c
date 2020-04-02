@@ -97,6 +97,10 @@ void input_handle(char c)
 			/* CTRL-A */
 			goto do_home;
 
+		case 0x04:
+			/* CTRL-D */
+			goto do_delete;
+
 		case 0x05:
 			/* CTRL-E */
 			goto do_end;
@@ -184,6 +188,7 @@ do_home:
 		case '3':
 			/* Delete */
 			state = INPUT_TERM;
+do_delete:
 			if (input_pos == input_len) {
 				bell();
 				break;
