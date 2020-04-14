@@ -8,3 +8,4 @@
 //
 
 extern void input_handle(char c);
+extern void input_show_history(void);

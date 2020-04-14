@@ -332,3 +332,17 @@ do_hist:
 		break;
 	}
 }
+
+void input_show_history(void)
+{
+	unsigned int i, j;
+
+	j = hist_idx - hist_len;
+	if (hist_idx < hist_len)
+		j += HIST_MAX;
+	for (i = 0; i < hist_len; i++) {
+		printf("%3u %s\n", i + 1, hist_buf[j++]);
+		if (j == HIST_MAX)
+			j = 0;
+	}
+}

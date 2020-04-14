@@ -15,6 +15,7 @@
 #include "board.h"
 #include "cmd.h"
 #include "env.h"
+#include "input.h"
 #include "print.h"
 #include "rgb.h"
 #include "util.h"
@@ -89,6 +90,11 @@ static void cmd_help(int argc, char *argv[])
 	printf("Valid command are:\n");
 	for (cmd = commands; cmd->name; cmd++)
 		printf("    %s: %s\n", cmd->name, cmd->help);
+}
+
+static void cmd_history(int argc, char *argv[])
+{
+	input_show_history();
 }
 
 extern struct usb_string_descriptor_struct usb_string_serial_number;
@@ -527,6 +533,7 @@ static struct cmd commands[] = {
 	{ "Getenv", "Get the value of an environment variable", cmd_getenv },
 	{ "GPio", "Control GPIO", cmd_gpio },
 	{ "Help", "Display this help", cmd_help },
+	{ "HIstory", "Show command history", cmd_history },
 	{ "I2c", "I2C tools", cmd_i2c },
 	{ "Key", "Control key", cmd_key },
 	{ "Monitor", "Monitor power consumption", cmd_monitor },
