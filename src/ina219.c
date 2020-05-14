@@ -283,6 +283,10 @@ int ina219_get_shunt_uV(unsigned int ch)
 	if (x < 0)
 		return x;
 
+	// Shunt voltage is signed, ignore negative values
+	if ((int16_t)x < 0)
+		return 0;
+
 	return x * 10;
 }
 
@@ -320,6 +324,10 @@ int ina219_get_current_mA(unsigned int ch)
 	pr_debug("INA219_CURRENT = %#04x\n", x);
 	if (x < 0)
 		return x;
+
+	// Current is signed, ignore negative values
+	if ((int16_t)x < 0)
+		return 0;
 
 	return DIV_ROUND_CLOSEST(x, ina219_current_div_mA);
 }
