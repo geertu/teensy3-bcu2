@@ -71,20 +71,17 @@ static int measure(void)
 		return 0;
 
 	if (!(n++ % 20))
-		printf("  Vbus (mV)      Vshunt (uV)    "
-		       "         P (mW)                  I (mA)\n"
-		       "------------- ----------------- "
-		       "------------------------- ---------------------\n");
+		printf("     Vbus      Vshunt     Power                         Current\n"
+		       "   --------  ---------  ----------------------------  ------------------------\n");
 
 	for (ch = 0; ch < 2; ch++) {
 		if (!(ina219_probed & BIT(ch)))
 			continue;
 
-		printf("%c: %5u (%5u) %3u.%03u (%3u.%03u) %5u (%5u %5u %5u) %4u (%4u %4u %4u)\n",
+		printf("%c: %5u mV  %3u.%02u mV  %5u mW (%5u %5u %5u)  %4u mA (%4u %4u %4u)\n",
 		       'A' + ch,
-		       vbus[ch].curr, vbus[ch].avg1,
-		       vshunt[ch].curr / 1000, vshunt[ch].curr % 1000,
-		       vshunt[ch].avg1 / 1000, vshunt[ch].avg1 % 1000,
+		       vbus[ch].curr,
+		       vshunt[ch].curr / 1000, vshunt[ch].curr % 1000 / 10,
 		       power[ch].curr,
 		       power[ch].avg1, power[ch].avg5, power[ch].avg15,
 		       current[ch].curr,
