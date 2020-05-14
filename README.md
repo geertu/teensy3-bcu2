@@ -16,6 +16,7 @@ of two development boards, e.g. on your desk, or in a board farm
   - Opto-isolator output control (six channels),
   - RGB status LED control (two channels),
   - GPIO expansion control (two channels),
+  - I2C expansion,
   - Test mode exercising all outputs.
 
 ## Features still to be implemented
@@ -23,7 +24,6 @@ of two development boards, e.g. on your desk, or in a board farm
   - Environment in non-volatile memory (currently hardcoded),
   - Triggers for RGB status LEDs,
   - Better power monitoring,
-  - I2C expansion,
   - ...
 
 ## License
