@@ -299,7 +299,7 @@ static void cmd_key(int argc, char *argv[])
 	int ch, state;
 
 	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
-		printf("Usage: keys <channel> [<state>]\n\n");
+		printf("Usage: key <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_KEY_CH - 1, NUM_KEY_CH - 1);
 		printf("Valid states are ON|OFF|PULSE|1|0\n");
