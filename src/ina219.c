@@ -28,11 +28,11 @@
 #define INA219_CFG_BRNG		   BIT(13) // Bus Voltage Range
 #define INA219_CFG_BRNG_16V		 0 // 16V
 #define INA219_CFG_BRNG_32V	   BIT(13) // 32V
-#define INA219_CFG_GAIN_MASK	 (3 << 12) // PGA Gain and Range
-#define INA219_CFG_GAIN_1	 (0 << 12) // ±40 mV
-#define INA219_CFG_GAIN_2	 (1 << 12) // ±80 mV
-#define INA219_CFG_GAIN_4	 (2 << 12) // ±160 mV
-#define INA219_CFG_GAIN_8	 (3 << 12) // ±320 mV
+#define INA219_CFG_GAIN_MASK	 (3 << 11) // PGA Gain and Range
+#define INA219_CFG_GAIN_1	 (0 << 11) // ±40 mV
+#define INA219_CFG_GAIN_2	 (1 << 11) // ±80 mV
+#define INA219_CFG_GAIN_4	 (2 << 11) // ±160 mV
+#define INA219_CFG_GAIN_8	 (3 << 11) // ±320 mV
 #define INA219_CFG_BADC_MASK	    0x0780 // Bus ADC Resolution/Averaging
 #define INA219_CFG_BADC_SHIFT		 7
 #define INA219_CFG_SADC_MASK	    0x0078 // Shunt ADC Resolution/Averaging
