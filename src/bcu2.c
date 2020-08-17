@@ -210,19 +210,19 @@ static int blink(void)
 {
 	static unsigned int state;
 
-	switch (state % 10) {
+	switch (state % 100) {
 	case 0:
 		if (cmd_mode == CMD_TEST)
 			test();
 		break;
 
-	case 1:
-	case 4:
+	case 10:
+	case 40:
 		digitalWrite(pin_heartbeat, 1);
 		break;
 
-	case 2:
-	case 6:
+	case 11:
+	case 42:
 		digitalWrite(pin_heartbeat, 0);
 		break;
 	}
@@ -234,7 +234,7 @@ static int blink(void)
 static struct task task_heartbeat = {
 	.name = "heartbeat",
 	.func = blink,
-	.period = HZ / 10,
+	.period = HZ / 100,
 };
 
 static void leds_init(void)
