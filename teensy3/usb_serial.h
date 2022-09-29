@@ -102,6 +102,11 @@ static inline void usb_serial_flush_callback(void)
 #define usb_cdc_line_rtsdtr		usb_serial_ports[0].cdc_line_rtsdtr
 #define usb_cdc_transmit_flush_timer	usb_serial_ports[0].cdc_transmit_flush_timer
 
+static inline uint32_t usb_serial_get_baud(void)
+{
+	return usb_cdc_line_coding[0];
+}
+
 #ifdef __cplusplus
 }
 #endif
@@ -143,7 +148,7 @@ public:
 	virtual int availableForWrite() { return usb_serial_write_buffer_free(); }
 	using Print::write;
         void send_now(void) { usb_serial_flush_output(); }
-        uint32_t baud(void) { return usb_cdc_line_coding[0]; }
+        uint32_t baud(void) { return usb_serial_get_baud(); }
         uint8_t stopbits(void) { uint8_t b = usb_cdc_line_coding[1]; if (!b) b = 1; return b; }
         uint8_t paritytype(void) { return usb_cdc_line_coding[1] >> 8; } // 0=none, 1=odd, 2=even
         uint8_t numbits(void) { return usb_cdc_line_coding[1] >> 16; }
