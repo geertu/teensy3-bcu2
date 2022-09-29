@@ -20,7 +20,7 @@ static struct env {
 	{ "baudA", "115200" },
 	{ "baudB", "115200" },
 	/* sentinel */
-	{ NULL, NULL },
+	{ NULL, NULL }
 };
 
 void env_init(void)
