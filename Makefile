@@ -9,7 +9,7 @@ M_LAYOUT              := US_ENGLISH
 # Arduino version
 M_ARDUINO_VERSION     := 10810
 # Teensyduino version
-M_TEENSYDUINO_VERSION := 148
+M_TEENSYDUINO_VERSION := 157
 # Teensy version (3.0, 3.1 or 3.2)
 M_TEENSY_VERSION      := 3.2
 # Compilation optimization, warning, debug flags
