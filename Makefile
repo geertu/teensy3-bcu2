@@ -7,7 +7,7 @@ M_USB_TYPE            := USB_TRIPLE_SERIAL
 # Keyboard layout (what was that for?)
 M_LAYOUT              := US_ENGLISH
 # Arduino version
-M_ARDUINO_VERSION     := 10810
+M_ARDUINO_VERSION     := 20000
 # Teensyduino version
 M_TEENSYDUINO_VERSION := 157
 # Teensy version (3.0, 3.1 or 3.2)
@@ -46,16 +46,21 @@ endif
 
 # Setting up some paths
 PWD          := $(realpath $(shell pwd))
-TOOLSPATH    := $(realpath $(ARDUINO_HOME)/hardware/tools)
 LIBRARYPATH  := $(realpath $(ARDUINO_HOME)/libraries)
+ifeq ($(M_ARDUINO_VERSION),20000) # FIXME
+TOOLSPATH    := $(realpath $(ARDUINO_HOME)/packages/teensy/tools/teensy-tools/1.57.0)
+COMPILERPATH := $(realpath $(ARDUINO_HOME)/packages/teensy/tools/teensy-compile/5.4.1/arm/bin)
+else
+TOOLSPATH    := $(realpath $(ARDUINO_HOME)/hardware/tools)
 COMPILERPATH := $(realpath $(ARDUINO_HOME)/hardware/tools/arm/bin)
+endif
 
 # Check if tools and compilers exist
 ifeq ($(TOOLSPATH),)
-$(error "Missing: $(ARDUINO_HOME)/hardware/tools")
+$(error "Missing: $(ARDUINO_HOME)/hardware/tools FIXME")
 endif
 ifeq ($(COMPILERPATH),)
-$(error "Missing $(ARDUINO_HOME)/hardware/tools/arm/bin")
+$(error "Missing $(ARDUINO_HOME)/hardware/tools/arm/bin FIXME")
 endif
 
 # Setting up linker definitions and other defines
@@ -157,9 +162,13 @@ SOURCE_OBJECTS := $(call prepare_objects,$(call list_files,$(SRC_PATH)))
 ifeq ($(M_REPLACE_CORE),)
 ####
 # We're using the vanilla core with optional additions
+ifeq ($(M_ARDUINO_VERSION),20000) # FIXME
+TEENSY3_CORE_PATH := $(realpath $(ARDUINO_HOME)/packages/teensy/hardware/avr/1.57.0/cores/teensy3)
+else
 TEENSY3_CORE_PATH := $(realpath $(ARDUINO_HOME)/hardware/teensy/avr/cores/teensy3)
+endif
 ifeq ($(TEENSY3_CORE_PATH),)
-$(error "Missing: $(ARDUINO_HOME)/hardware/teensy/avr/cores/teensy3")
+$(error "Missing: $(ARDUINO_HOME)/hardware/teensy/avr/cores/teensy3 FIXME")
 endif
 
 TEENSY3_EXCLUDES = Makefile main.cpp
