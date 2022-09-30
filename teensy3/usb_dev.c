@@ -389,15 +389,15 @@ static void usb_setup(void)
 #endif
 
 #if defined(MTP_INTERFACE)
-	case 0x64A1: // Cancel Request (PTP spec, 5.2.1, page 8)
+	  case 0x64A1: // Cancel Request (PTP spec, 5.2.1, page 8)
 		// TODO: required by PTP spec
 		endpoint0_stall();
 		return;
-	case 0x66A1: // Device Reset (PTP spec, 5.2.3, page 10)
+	  case 0x66A1: // Device Reset (PTP spec, 5.2.3, page 10)
 		// TODO: required by PTP spec
 		endpoint0_stall();
 		return;
-	case 0x67A1: // Get Device Statis (PTP spec, 5.2.4, page 10)
+	  case 0x67A1: // Get Device Statis (PTP spec, 5.2.4, page 10)
 		// For now, always respond with status ok.
 		reply_buffer[0] = 0x4;
 		reply_buffer[1] = 0;
@@ -568,7 +568,7 @@ static void usb_control(uint32_t stat)
 	//serial_print("\n");
 
 	switch (pid) {
-	case 0x0D: // Setup received from host
+	  case 0x0D: // Setup received from host
 		//serial_print("PID=Setup\n");
 		//if (count != 8) ; // panic?
 		// grab the 8 byte setup info
@@ -613,8 +613,8 @@ static void usb_control(uint32_t stat)
 		// unfreeze the USB, now that we're ready
 		USB0_CTL = USB_CTL_USBENSOFEN; // clear TXSUSPENDTOKENBUSY bit
 		break;
-	case 0x01:  // OUT transaction received from host
-	case 0x02:
+	  case 0x01:  // OUT transaction received from host
+	  case 0x02:
 		//serial_print("PID=OUT\n");
 		if (setup.wRequestAndType == 0x2021 /*CDC_SET_LINE_CODING*/) {
 			int i;
@@ -671,7 +671,7 @@ static void usb_control(uint32_t stat)
 		b->desc = BDT_DESC(EP0_SIZE, DATA1);
 		break;
 
-	case 0x09: // IN transaction completed to host
+	  case 0x09: // IN transaction completed to host
 		//serial_print("PID=IN:");
 		//serial_phex(stat);
 		//serial_print("\n");
@@ -696,7 +696,7 @@ static void usb_control(uint32_t stat)
 		}
 
 		break;
-	//default:
+	  //default:
 		//serial_print("PID=unknown:");
 		//serial_phex(pid);
 		//serial_print("\n");
