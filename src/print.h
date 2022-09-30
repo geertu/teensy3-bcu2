@@ -38,10 +38,8 @@ static inline __printf(1, 2) int dummy_printf(const char *fmt, ...)
 }
 
 #undef putchar
-#undef getchar
 #define printf			usb_serial_printf
 #define putchar			usb_serial_putchar
-#define getchar			usb_serial_getchar
 
 #define pr_info(fmt, ...)	printf(ESC_GREEN fmt ESC_NORMAL, ##__VA_ARGS__)
 #define pr_warn(fmt, ...)	printf(ESC_YELLOW fmt ESC_NORMAL, ##__VA_ARGS__)
