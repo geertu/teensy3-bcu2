@@ -1,7 +1,7 @@
 //
 // Main Board Control Unit Duo Program
 //
-// © Copyright 2019-2020 Glider bv
+// © Copyright 2019-2020, 2022 Glider bv
 //
 // This file is subject to the terms and conditions of the GNU General Public
 // License, version 2.
@@ -94,7 +94,7 @@ void usb_serial_event(void)
 	int c;
 
 	for (i = 0; i < MAX_SERIAL_BURST; i++) {
-		c = getchar();
+		c = usb_serial_getchar();
 		if (c < 0)
 			return;
 
