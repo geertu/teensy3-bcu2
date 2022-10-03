@@ -1362,7 +1362,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	2,					// bNrChannels
 	0x03, 0x00,				// wChannelConfig, 0x0003 = Left & Right Front
 	0,					// iChannelNames
-	0, 					// iTerminal
+	0,					// iTerminal
 	// Output Terminal Descriptor
 	// USB DCD for Audio Devices 1.0, Table 4-4, page 40
 	9,					// bLength
@@ -1384,17 +1384,17 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	2,					// bNrChannels
 	0x03, 0x00,				// wChannelConfig, 0x0003 = Left & Right Front
 	0,					// iChannelNames
-	0, 					// iTerminal
+	0,					// iTerminal
 	// Volume feature descriptor
 	10,					// bLength
-	0x24, 				// bDescriptorType = CS_INTERFACE
-	0x06, 				// bDescriptorSubType = FEATURE_UNIT
-	0x31, 				// bUnitID
-	0x03, 				// bSourceID (Input Terminal)
-	0x01, 				// bControlSize (each channel is 1 byte, 3 channels)
-	0x01, 				// bmaControls(0) Master: Mute
-	0x02, 				// bmaControls(1) Left: Volume
-	0x02, 				// bmaControls(2) Right: Volume
+	0x24,					// bDescriptorType = CS_INTERFACE
+	0x06,					// bDescriptorSubType = FEATURE_UNIT
+	0x31,					// bUnitID
+	0x03,					// bSourceID (Input Terminal)
+	0x01,					// bControlSize (each channel is 1 byte, 3 channels)
+	0x01,					// bmaControls(0) Master: Mute
+	0x02,					// bmaControls(1) Left: Volume
+	0x02,					// bmaControls(2) Right: Volume
 	0x00,				// iFeature
 	// Output Terminal Descriptor
 	// USB DCD for Audio Devices 1.0, Table 4-4, page 40
@@ -1431,7 +1431,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	0,					// iInterface
 	// Class-Specific AS Interface Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.5.2, Table 4-19, page 60
-	7, 					// bLength
+	7,					// bLength
 	0x24,					// bDescriptorType = CS_INTERFACE
 	1,					// bDescriptorSubtype, 1 = AS_GENERAL
 	2,					// bTerminalLink: Terminal ID = 2
@@ -1450,22 +1450,22 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	LSB(44100), MSB(44100), 0,		// tSamFreq
 	// Standard AS Isochronous Audio Data Endpoint Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.6.1.1, Table 4-20, page 61-62
-	9, 					// bLength
-	5, 					// bDescriptorType, 5 = ENDPOINT_DESCRIPTOR
+	9,					// bLength
+	5,					// bDescriptorType, 5 = ENDPOINT_DESCRIPTOR
 	AUDIO_TX_ENDPOINT | 0x80,		// bEndpointAddress
-	0x09, 					// bmAttributes = isochronous, adaptive
+	0x09,					// bmAttributes = isochronous, adaptive
 	LSB(AUDIO_TX_SIZE), MSB(AUDIO_TX_SIZE),	// wMaxPacketSize
-	1,			 		// bInterval, 1 = every frame
+	1,					// bInterval, 1 = every frame
 	0,					// bRefresh
 	0,					// bSynchAddress
 	// Class-Specific AS Isochronous Audio Data Endpoint Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.6.1.2, Table 4-21, page 62-63
-	7,  					// bLength
-	0x25,  					// bDescriptorType, 0x25 = CS_ENDPOINT
-	1,  					// bDescriptorSubtype, 1 = EP_GENERAL
-	0x00,  					// bmAttributes
-	0,  					// bLockDelayUnits, 1 = ms
-	0x00, 0x00,  				// wLockDelay
+	7,					// bLength
+	0x25,					// bDescriptorType, 0x25 = CS_ENDPOINT
+	1,					// bDescriptorSubtype, 1 = EP_GENERAL
+	0x00,					// bmAttributes
+	0,					// bLockDelayUnits, 1 = ms
+	0x00, 0x00,				// wLockDelay
 	// Standard AS Interface Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.5.1, Table 4-18, page 59
 	// Alternate 0: default setting, disabled zero bandwidth
@@ -1490,7 +1490,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	0,					// iInterface
 	// Class-Specific AS Interface Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.5.2, Table 4-19, page 60
-	7, 					// bLength
+	7,					// bLength
 	0x24,					// bDescriptorType = CS_INTERFACE
 	1,					// bDescriptorSubtype, 1 = AS_GENERAL
 	3,					// bTerminalLink: Terminal ID = 3
@@ -1509,30 +1509,30 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	LSB(44100), MSB(44100), 0,		// tSamFreq
 	// Standard AS Isochronous Audio Data Endpoint Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.6.1.1, Table 4-20, page 61-62
-	9, 					// bLength
-	5, 					// bDescriptorType, 5 = ENDPOINT_DESCRIPTOR
+	9,					// bLength
+	5,					// bDescriptorType, 5 = ENDPOINT_DESCRIPTOR
 	AUDIO_RX_ENDPOINT,			// bEndpointAddress
-	0x05, 					// bmAttributes = isochronous, asynchronous
+	0x05,					// bmAttributes = isochronous, asynchronous
 	LSB(AUDIO_RX_SIZE), MSB(AUDIO_RX_SIZE),	// wMaxPacketSize
-	1,			 		// bInterval, 1 = every frame
+	1,					// bInterval, 1 = every frame
 	0,					// bRefresh
 	AUDIO_SYNC_ENDPOINT | 0x80,		// bSynchAddress
 	// Class-Specific AS Isochronous Audio Data Endpoint Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.6.1.2, Table 4-21, page 62-63
-	7,  					// bLength
-	0x25,  					// bDescriptorType, 0x25 = CS_ENDPOINT
-	1,  					// bDescriptorSubtype, 1 = EP_GENERAL
-	0x00,  					// bmAttributes
-	0,  					// bLockDelayUnits, 1 = ms
-	0x00, 0x00,  				// wLockDelay
+	7,					// bLength
+	0x25,					// bDescriptorType, 0x25 = CS_ENDPOINT
+	1,					// bDescriptorSubtype, 1 = EP_GENERAL
+	0x00,					// bmAttributes
+	0,					// bLockDelayUnits, 1 = ms
+	0x00, 0x00,				// wLockDelay
 	// Standard AS Isochronous Audio Synch Endpoint Descriptor
 	// USB DCD for Audio Devices 1.0, Section 4.6.2.1, Table 4-22, page 63-64
-	9, 					// bLength
-	5, 					// bDescriptorType, 5 = ENDPOINT_DESCRIPTOR
+	9,					// bLength
+	5,					// bDescriptorType, 5 = ENDPOINT_DESCRIPTOR
 	AUDIO_SYNC_ENDPOINT | 0x80,		// bEndpointAddress
-	0x11, 					// bmAttributes = isochronous, feedback
+	0x11,					// bmAttributes = isochronous, feedback
 	3, 0,					// wMaxPacketSize, 3 bytes
-	1,			 		// bInterval, 1 = every frame
+	1,					// bInterval, 1 = every frame
 	5,					// bRefresh, 5 = 32ms
 	0,					// bSynchAddress
 #endif
