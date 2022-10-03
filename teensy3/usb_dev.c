@@ -456,19 +456,19 @@ static void usb_setup(void)
 	  case 0x0221:
 	  case 0x0321:
 	  case 0x0421:
-	  	// handle these on the next packet. See usb_audio_set_feature()
+		// handle these on the next packet. See usb_audio_set_feature()
 		return;
 	  case 0x81A1: // GET FEATURE
 	  case 0x82A1:
 	  case 0x83A1:
 	  case 0x84A1:
-	  	if (usb_audio_get_feature(&setup, reply_buffer, &datalen)) {
-	  		data = reply_buffer;
-	  	}
-	  	else {
-	  		endpoint0_stall();
-	  		return;
-	  	}
+		if (usb_audio_get_feature(&setup, reply_buffer, &datalen)) {
+			data = reply_buffer;
+		}
+		else {
+			endpoint0_stall();
+			return;
+		}
 		break;
 
 	  case 0x81A2: // GET_CUR (wValue=0, wIndex=interface, wLength=len)
