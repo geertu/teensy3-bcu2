@@ -618,7 +618,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0x02,                                   // bFunctionSubClass
         0x01,                                   // bFunctionProtocol
         0,                                      // iFunction
-#endif
+#endif // CDC_IAD_DESCRIPTOR
 
 #ifdef CDC_DATA_INTERFACE
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
@@ -1535,7 +1535,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
 	1,					// bInterval, 1 = every frame
 	5,					// bRefresh, 5 = 32ms
 	0,					// bSynchAddress
-#endif
+#endif // AUDIO_INTERFACE
 
 #ifdef MULTITOUCH_INTERFACE
         // interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
@@ -1564,7 +1564,7 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         0x03,                                   // bmAttributes (0x03=intr)
         MULTITOUCH_SIZE, 0,                     // wMaxPacketSize
         1,                                      // bInterval
-#endif // KEYMEDIA_INTERFACE
+#endif // MULTITOUCH_INTERFACE
 };
 
 
