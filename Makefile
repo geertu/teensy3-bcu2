@@ -27,6 +27,8 @@ SRC_PATH          := src
 TEENSY3_PATH      := teensy3
 # Teensy3 copy folder
 TEENSY3_COPY_PATH := teensy3.copy
+# Files to remove from base Teensy3
+TEENSY3_REMOVED_FILES :=
 
 ################################################################################
 #
@@ -169,6 +171,7 @@ TEENSY3_OVERRIDE_FILES = $(call relpath2,$(realpath $(TEENSY3_PATH)),$(call \
 	list_files,$(TEENSY3_PATH)))
 INCLUDE_PATHS += $(TEENSY3_PATH)
 TEENSY3_EXCLUDES += $(TEENSY3_OVERRIDE_FILES)
+TEENSY3_EXCLUDES += $(TEENSY3_REMOVED_FILES)
 endif
 
 TEENSY3_FILES = $(filter-out $(TEENSY3_EXCLUDES),$(call \
