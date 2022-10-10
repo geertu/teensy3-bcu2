@@ -28,7 +28,7 @@ TEENSY3_PATH      := teensy3
 # Teensy3 copy folder
 TEENSY3_COPY_PATH := teensy3.copy
 # Files to remove from base Teensy3
-TEENSY3_REMOVED_FILES :=
+TEENSY3_REMOVED_FILES := usb_serial.c usb_serial2.c usb_serial3.c
 
 ################################################################################
 #
