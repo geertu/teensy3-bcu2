@@ -40,33 +40,71 @@
 #if F_CPU >= 20000000 && !defined(USB_DISABLED)
 
 #include "core_pins.h" // for millis()
+#include "usb_serial_port.h"
 
 // C language implementation
 #ifdef __cplusplus
 extern "C" {
 #endif
-int usb_serial_getchar(void);
-int usb_serial_peekchar(void);
-int usb_serial_available(void);
-int usb_serial_read(void *buffer, uint32_t size);
-void usb_serial_flush_input(void);
-int usb_serial_putchar(uint8_t c);
-int usb_serial_write(const void *buffer, uint32_t size);
-int usb_serial_write_buffer_free(void);
-void usb_serial_flush_output(void);
-void usb_serial_flush_callback(void);
-extern uint32_t usb_cdc_line_coding[2];
-extern volatile uint32_t usb_cdc_line_rtsdtr_millis;
-extern volatile uint32_t systick_millis_count;
-extern volatile uint8_t usb_cdc_line_rtsdtr;
-extern volatile uint8_t usb_cdc_transmit_flush_timer;
-extern volatile uint8_t usb_configuration;
+
+static inline int usb_serial_getchar(void)
+{
+	return __usb_serial_getchar(&usb_serial_ports[0]);
+}
+
+static inline int usb_serial_peekchar(void)
+{
+	return __usb_serial_peekchar(&usb_serial_ports[0]);
+}
+
+static inline int usb_serial_available(void)
+{
+	return __usb_serial_available(&usb_serial_ports[0]);
+}
+
+static inline int usb_serial_read(void *buffer, uint32_t size)
+{
+	return __usb_serial_read(&usb_serial_ports[0], buffer, size);
+}
+
+static inline void usb_serial_flush_input(void)
+{
+	__usb_serial_flush_input(&usb_serial_ports[0]);
+}
+
+static inline int usb_serial_putchar(uint8_t c)
+{
+	return __usb_serial_putchar(&usb_serial_ports[0], c);
+}
+
+static inline int usb_serial_write(const void *buffer, uint32_t size)
+{
+	return __usb_serial_write(&usb_serial_ports[0], buffer, size);
+}
+
+static inline int usb_serial_write_buffer_free(void)
+{
+	return __usb_serial_write_buffer_free(&usb_serial_ports[0]);
+}
+
+static inline void usb_serial_flush_output(void)
+{
+	__usb_serial_flush_output(&usb_serial_ports[0]);
+}
+
+static inline void usb_serial_flush_callback(void)
+{
+	__usb_serial_flush_callback(&usb_serial_ports[0]);
+}
+
+#define usb_cdc_line_coding		usb_serial_ports[0].cdc_line_coding
+#define usb_cdc_line_rtsdtr_millis	usb_serial_ports[0].cdc_line_rtsdtr_millis
+#define usb_cdc_line_rtsdtr		usb_serial_ports[0].cdc_line_rtsdtr
+#define usb_cdc_transmit_flush_timer	usb_serial_ports[0].cdc_transmit_flush_timer
+
 #ifdef __cplusplus
 }
 #endif
-
-#define USB_SERIAL_DTR  0x01
-#define USB_SERIAL_RTS  0x02
 
 // C++ interface
 #ifdef __cplusplus
