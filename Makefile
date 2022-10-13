@@ -6,10 +6,17 @@ M_CPU_CLOCK           := 72000000
 M_USB_TYPE            := USB_TRIPLE_SERIAL
 # Keyboard layout (what was that for?)
 M_LAYOUT              := US_ENGLISH
+ifeq ($(shell hostname),rox)
+# Arduino version
+M_ARDUINO_VERSION     := 10810
+# Teensyduino version
+M_TEENSYDUINO_VERSION := 148
+else
 # Arduino version
 M_ARDUINO_VERSION     := 20000
 # Teensyduino version
 M_TEENSYDUINO_VERSION := 157
+endif
 # Teensy version (3.0, 3.1 or 3.2)
 M_TEENSY_VERSION      := 3.2
 # Compilation optimization, warning, debug flags
