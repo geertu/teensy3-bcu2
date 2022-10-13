@@ -244,10 +244,11 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT3_CONFIG	ENDPOINT_TRANSMIT_ONLY
 
   // echo 0x16c0 0x048d > /sys/bus/usb-serial/drivers/mxuport/new_id
-  #define MXU_SERIAL_NUM_PORTS	2	// FIXME
+  //#define MXU_SERIAL_NUM_PORTS	2	// FIXME
 
   // echo 0x16c0 0x048d 0 0x110a 0x1450 > /sys/bus/usb-serial/drivers/mxuport/new_id
   //#define MXU_SERIAL_NUM_PORTS	4	// FIXME
+  #define MXU_SERIAL_NUM_PORTS	3	// FIXME
 
   // echo 0x16c0 0x048d 0 0x110a 0x1658 > /sys/bus/usb-serial/drivers/mxuport/new_id
   //#define MXU_SERIAL_NUM_PORTS	8	// FIXME
