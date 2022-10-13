@@ -51,6 +51,12 @@ usb_serial3_class SerialUSB2;
 #endif
 #endif
 
+#ifdef MXU_SERIAL_INTERFACE
+#if MXU_SERIAL_NUM_PORTS > 1
+usb_serial2_class SerialUSB1;
+#endif
+#endif // MXU_SERIAL_INTERFACE
+
 #ifdef MIDI_INTERFACE
 usb_midi_class usbMIDI;
 #endif
@@ -88,7 +94,8 @@ usb_serial_class Serial;
 #else // F_CPU < 20 MHz
 
 #if defined(USB_SERIAL) || defined(USB_DUAL_SERIAL) || \
-    defined(USB_TRIPLE_SERIAL) || defined(USB_SERIAL_HID)
+    defined(USB_TRIPLE_SERIAL) || defined(USB_SERIAL_HID) || \
+    defined(USB_MXU_SERIAL)
 usb_serial_class Serial;
 #elif (USB_DISABLED)
 usb_serial_class Serial;

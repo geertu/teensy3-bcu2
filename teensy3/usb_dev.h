@@ -110,11 +110,12 @@ extern void usb_touchscreen_update_callback(void);
 }
 #endif
 
-#ifdef CDC_DATA_INTERFACE
+#if defined(CDC_DATA_INTERFACE) || defined(MXU_SERIAL_INTERFACE)
 #include "usb_serial.h"
 #endif
 
-#ifdef CDC2_DATA_INTERFACE
+#if defined(CDC2_DATA_INTERFACE) || \
+    (defined(MXU_SERIAL_INTERFACE) && MXU_SERIAL_NUM_PORTS > 1)
 #include "usb_serial2.h"
 #endif
 
