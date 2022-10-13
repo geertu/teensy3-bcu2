@@ -299,6 +299,27 @@
 #ifdef MTP_EVENT_INTERVAL
 #undef MTP_EVENT_INTERVAL
 #endif
+#ifdef MXU_SERIAL_INTERFACE
+#undef MXU_SERIAL_INTERFACE
+#endif
+#ifdef MXU_RX_ENDPOINT
+#undef MXU_RX_ENDPOINT
+#endif
+#ifdef MXU_TX_ENDPOINT
+#undef MXU_TX_ENDPOINT
+#endif
+#ifdef MXU_EV_ENDPOINT
+#undef MXU_EV_ENDPOINT
+#endif
+#ifdef MXU_RX_SIZE
+#undef MXU_RX_SIZE
+#endif
+#ifdef MXU_TX_SIZE
+#undef MXU_TX_SIZE
+#endif
+#ifdef MXU_EV_SIZE
+#undef MXU_EV_SIZE
+#endif
 #ifdef ENDPOINT1_CONFIG
 #undef ENDPOINT1_CONFIG
 #endif

@@ -586,8 +586,14 @@ static uint8_t flightsim_report_desc[] = {
 #define MULTITOUCH_INTERFACE_DESC_SIZE	0
 #endif
 
-#define CONFIG_DESC_SIZE		MULTITOUCH_INTERFACE_DESC_POS+MULTITOUCH_INTERFACE_DESC_SIZE
+#define MXU_SERIAL_INTERFACE_DESC_POS	MULTITOUCH_INTERFACE_DESC_POS+MULTITOUCH_INTERFACE_DESC_SIZE
+#ifdef  MXU_SERIAL_INTERFACE
+#define MXU_SERIAL_INTERFACE_DESC_SIZE	9+7+7+7
+#else
+#define MXU_SERIAL_INTERFACE_DESC_SIZE	0
+#endif
 
+#define CONFIG_DESC_SIZE		MXU_SERIAL_INTERFACE_DESC_POS+MXU_SERIAL_INTERFACE_DESC_SIZE
 
 
 // **************************************************************
@@ -1565,6 +1571,40 @@ static uint8_t config_descriptor[CONFIG_DESC_SIZE] = {
         MULTITOUCH_SIZE, 0,                     // wMaxPacketSize
         1,                                      // bInterval
 #endif // MULTITOUCH_INTERFACE
+
+#ifdef MXU_SERIAL_INTERFACE
+	// interface descriptor, USB spec 9.6.5, page 267-269, Table 9-12
+	9,					// bLength
+	4,					// bDescriptorType
+	MXU_SERIAL_INTERFACE,			// bInterfaceNumber
+	0,					// bAlternateSetting
+	3,					// bNumEndpoints
+	0xFF,					// bInterfaceClass
+	0xFF,					// bInterfaceSubClass
+	0xFF,					// bInterfaceProtocol
+	0,					// iInterface
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	MXU_RX_ENDPOINT,			// bEndpointAddress
+	0x02,					// bmAttributes (0x02=bulk)
+	MXU_RX_SIZE, 0,				// wMaxPacketSize
+	0,					// bInterval
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	MXU_TX_ENDPOINT | 0x80,			// bEndpointAddress
+	0x02,					// bmAttributes (0x02=bulk)
+	MXU_TX_SIZE, 0,				// wMaxPacketSize
+	0,					// bInterval
+	// endpoint descriptor, USB spec 9.6.6, page 269-271, Table 9-13
+	7,					// bLength
+	5,					// bDescriptorType
+	MXU_EV_ENDPOINT | 0x80,			// bEndpointAddress
+	0x02,					// bmAttributes (0x02=bulk)
+	MXU_EV_SIZE, 0,				// wMaxPacketSize
+	0,					// bInterval
+#endif // MXU_SERIAL_INTERFACE
 };
 
 

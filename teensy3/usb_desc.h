@@ -221,6 +221,40 @@ let me know?  http://forum.pjrc.com/forums/4-Suggestions-amp-Bug-Reports
   #define ENDPOINT9_CONFIG	ENDPOINT_RECEIVE_ONLY
   #define ENDPOINT10_CONFIG	ENDPOINT_TRANSMIT_ONLY
 
+#elif defined(USB_MXU_SERIAL)
+  #define VENDOR_ID		0x16C0
+  #define PRODUCT_ID		0x048D
+  #define MANUFACTURER_NAME	{'T','e','e','n','s','y','d','u','i','n','o'}
+  #define MANUFACTURER_NAME_LEN	11
+  #define PRODUCT_NAME		{'M','X','U',' ','S','e','r','i','a','l'}
+  #define PRODUCT_NAME_LEN	10
+  #define EP0_SIZE		64
+  #define NUM_ENDPOINTS		3
+  #define NUM_USB_BUFFERS	32	// FIXME depend on number of ports?
+  #define NUM_INTERFACE		1
+  #define MXU_SERIAL_INTERFACE	0
+  #define MXU_RX_ENDPOINT	1
+  #define MXU_TX_ENDPOINT	2
+  #define MXU_EV_ENDPOINT	3
+  #define MXU_RX_SIZE		64
+  #define MXU_TX_SIZE		64
+  #define MXU_EV_SIZE		16
+  #define ENDPOINT1_CONFIG	ENDPOINT_RECEIVE_ONLY
+  #define ENDPOINT2_CONFIG	ENDPOINT_TRANSMIT_ONLY
+  #define ENDPOINT3_CONFIG	ENDPOINT_TRANSMIT_ONLY
+
+  // echo 0x16c0 0x048d > /sys/bus/usb-serial/drivers/mxuport/new_id
+  #define MXU_SERIAL_NUM_PORTS	2	// FIXME
+
+  // echo 0x16c0 0x048d 0 0x110a 0x1450 > /sys/bus/usb-serial/drivers/mxuport/new_id
+  //#define MXU_SERIAL_NUM_PORTS	4	// FIXME
+
+  // echo 0x16c0 0x048d 0 0x110a 0x1658 > /sys/bus/usb-serial/drivers/mxuport/new_id
+  //#define MXU_SERIAL_NUM_PORTS	8	// FIXME
+
+  // echo 0x16c0 0x048d 0 0x110a 0x1653 > /sys/bus/usb-serial/drivers/mxuport/new_id
+  //#define MXU_SERIAL_NUM_PORTS	16	// FIXME
+
 #elif defined(USB_KEYBOARDONLY)
   #define VENDOR_ID		0x16C0
   #define PRODUCT_ID		0x04D0
