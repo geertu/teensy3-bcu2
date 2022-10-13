@@ -507,7 +507,7 @@ static void usb_setup(void)
 	}
 	send:
 	//serial_print("setup send ");
-	//serial_phex32(data);
+	//serial_phex32((uint32_t)data);
 	//serial_print(",");
 	//serial_phex16(datalen);
 	//serial_print("\n");
@@ -554,6 +554,7 @@ static void usb_control(uint32_t stat)
 {
 	bdt_t *b;
 	uint32_t pid, size;
+	//uint32_t count;
 	uint8_t *buf;
 	const uint8_t *data;
 
