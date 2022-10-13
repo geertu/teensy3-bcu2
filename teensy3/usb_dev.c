@@ -1296,6 +1296,34 @@ void usb_isr(void)
 				if (t == 0) usb_serial4_flush_callback();
 			}
 #endif
+#if MXU_SERIAL_NUM_PORTS > 4
+			t = usb_cdc5_transmit_flush_timer;
+			if (t) {
+				usb_cdc5_transmit_flush_timer = --t;
+				if (t == 0) usb_serial5_flush_callback();
+			}
+#endif
+#if MXU_SERIAL_NUM_PORTS > 5
+			t = usb_cdc6_transmit_flush_timer;
+			if (t) {
+				usb_cdc6_transmit_flush_timer = --t;
+				if (t == 0) usb_serial6_flush_callback();
+			}
+#endif
+#if MXU_SERIAL_NUM_PORTS > 6
+			t = usb_cdc7_transmit_flush_timer;
+			if (t) {
+				usb_cdc7_transmit_flush_timer = --t;
+				if (t == 0) usb_serial7_flush_callback();
+			}
+#endif
+#if MXU_SERIAL_NUM_PORTS > 7
+			t = usb_cdc8_transmit_flush_timer;
+			if (t) {
+				usb_cdc8_transmit_flush_timer = --t;
+				if (t == 0) usb_serial8_flush_callback();
+			}
+#endif
 #endif // MXU_SERIAL_INTERFACE
 #ifdef SEREMU_INTERFACE
 			t = usb_seremu_transmit_flush_timer;

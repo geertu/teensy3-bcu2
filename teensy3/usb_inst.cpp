@@ -61,6 +61,18 @@ usb_serial3_class SerialUSB2;
 #if MXU_SERIAL_NUM_PORTS > 3
 usb_serial4_class SerialUSB3;
 #endif
+#if MXU_SERIAL_NUM_PORTS > 4
+usb_serial5_class SerialUSB4;
+#endif
+#if MXU_SERIAL_NUM_PORTS > 5
+usb_serial6_class SerialUSB5;
+#endif
+#if MXU_SERIAL_NUM_PORTS > 6
+usb_serial7_class SerialUSB6;
+#endif
+#if MXU_SERIAL_NUM_PORTS > 7
+usb_serial8_class SerialUSB7;
+#endif
 #endif // MXU_SERIAL_INTERFACE
 
 #ifdef MIDI_INTERFACE
@@ -119,3 +131,11 @@ void serialEventUSB2() __attribute__((weak));
 void serialEventUSB2() {}
 void serialEventUSB3() __attribute__((weak));
 void serialEventUSB3() {}
+void serialEventUSB4() __attribute__((weak));
+void serialEventUSB4() {}
+void serialEventUSB5() __attribute__((weak));
+void serialEventUSB5() {}
+void serialEventUSB6() __attribute__((weak));
+void serialEventUSB6() {}
+void serialEventUSB7() __attribute__((weak));
+void serialEventUSB7() {}

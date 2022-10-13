@@ -128,6 +128,18 @@ extern void usb_touchscreen_update_callback(void);
 #if MXU_SERIAL_NUM_PORTS > 3
 #include "usb_serial4.h"
 #endif
+#if MXU_SERIAL_NUM_PORTS > 4
+#include "usb_serial5.h"
+#endif
+#if MXU_SERIAL_NUM_PORTS > 5
+#include "usb_serial6.h"
+#endif
+#if MXU_SERIAL_NUM_PORTS > 6
+#include "usb_serial7.h"
+#endif
+#if MXU_SERIAL_NUM_PORTS > 7
+#include "usb_serial8.h"
+#endif
 #endif // MXU_SERIAL_INTERFACE
 
 #else // F_CPU < 20000000

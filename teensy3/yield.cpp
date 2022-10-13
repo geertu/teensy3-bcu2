@@ -51,6 +51,18 @@ void yield(void)
 #if MXU_SERIAL_NUM_PORTS > 3
 	if (SerialUSB3.available()) serialEventUSB3();
 #endif
+#if MXU_SERIAL_NUM_PORTS > 4
+	if (SerialUSB4.available()) serialEventUSB4();
+#endif
+#if MXU_SERIAL_NUM_PORTS > 5
+	if (SerialUSB5.available()) serialEventUSB5();
+#endif
+#if MXU_SERIAL_NUM_PORTS > 6
+	if (SerialUSB6.available()) serialEventUSB6();
+#endif
+#if MXU_SERIAL_NUM_PORTS > 7
+	if (SerialUSB7.available()) serialEventUSB7();
+#endif
 #endif // USB_MXU_SERIAL
 	if (Serial1.available()) serialEvent1();
 	if (Serial2.available()) serialEvent2();
