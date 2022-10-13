@@ -41,7 +41,33 @@
 #if F_CPU >= 20000000 && defined(NUM_ENDPOINTS)
 
 #include "kinetis.h"
-//#include "HardwareSerial.h"
+#include "HardwareSerial.h"
+extern __attribute__((__format__(printf, 1, 2))) int serial_printf(const char *fmt, ...);
+#define printf			serial_printf
+#define ESC_NORMAL		"\e[0m"
+#define ESC_BLACK		"\e[31m"
+#define ESC_RED			"\e[31m"
+#define ESC_GREEN		"\e[32m"
+#define ESC_YELLOW		"\e[33m"
+#define ESC_BLUE		"\e[34m"
+#define ESC_MAGENTA		"\e[35m"
+#define ESC_CYAN		"\e[36m"
+#define ESC_WHITE		"\e[37m"
+#define pr_info(fmt, ...)	printf(ESC_GREEN fmt ESC_NORMAL, ##__VA_ARGS__)
+#define pr_warn(fmt, ...)	printf(ESC_YELLOW fmt ESC_NORMAL, ##__VA_ARGS__)
+#define pr_err(fmt, ...)	printf(ESC_RED fmt ESC_NORMAL, ##__VA_ARGS__)
+static void pr_hex(const char *label, const void *p, size_t len)
+{
+	const uint8_t *data = p;
+
+	if (!len)
+		return;
+
+	printf(ESC_BLUE "%s:", label);
+	while (len--)
+		printf(" %02x", *data++);
+	printf(ESC_NORMAL "\n");
+}
 #include "usb_mem.h"
 #include <string.h> // for memset
 
@@ -152,6 +178,7 @@ volatile uint8_t usb_reboot_timer = 0;
 
 static void endpoint0_stall(void)
 {
+pr_err("%s\n", __func__);
 	USB0_ENDPT0 = USB_ENDPT_EPSTALL | USB_ENDPT_EPRXEN | USB_ENDPT_EPTXEN | USB_ENDPT_EPHSHK;
 }
 
@@ -502,8 +529,8 @@ static void usb_setup(void)
 		break;
 #endif
 
-#if 0
-#define mxu_dbg(req)	serial_print(req "\n")
+#if 1
+#define mxu_dbg(req)	pr_info("%s wRequestAndType %04x wValue %04x wIndex %04x wLength %04x\n", req, setup.wRequestAndType, setup.wValue, setup.wIndex, setup.wLength)
 #else
 #define mxu_dbg(req)	do { } while (0)
 #endif
@@ -516,7 +543,7 @@ static void usb_setup(void)
 	  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate */
 		mxu_dbg("RQ_VENDOR_SET_BAUD");
 		if (setup.wLength < 4) {
-			//serial_print("Invalid wLength\n");
+			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
 			endpoint0_stall();
 			return;
 		}
@@ -525,7 +552,7 @@ static void usb_setup(void)
 	  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status */
 		mxu_dbg("RQ_VENDOR_SET_LINE");
 		if (setup.wLength < 4) {
-			//serial_print("Invalid wLength\n");
+			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
 			endpoint0_stall();
 			return;
 		}
@@ -534,7 +561,7 @@ static void usb_setup(void)
 	  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars */
 		mxu_dbg("RQ_VENDOR_SET_CHARS");
 		if (setup.wLength < 2) {
-			//serial_print("Invalid wLength\n");
+			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
 			endpoint0_stall();
 			return;
 		}
@@ -556,7 +583,7 @@ static void usb_setup(void)
 			break;
 
 		  default:
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
@@ -574,7 +601,7 @@ static void usb_setup(void)
 			break;
 
 		  default:
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
@@ -592,7 +619,7 @@ static void usb_setup(void)
 			break;
 
 		  default:
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
@@ -610,7 +637,7 @@ static void usb_setup(void)
 			break;
 
 		  default:
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
@@ -626,7 +653,7 @@ static void usb_setup(void)
 			break;
 
 		  default:
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
@@ -655,7 +682,7 @@ static void usb_setup(void)
 			break;
 
 		  default:
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
@@ -680,13 +707,13 @@ static void usb_setup(void)
 		mxu_dbg("RQ_VENDOR_SET_FIFO_DISABLE");
 mxu_serial_nop_check_wValue_0_and_wIndex:
 		if (setup.wValue) {
-			//serial_print("Invalid wValue\n");
+			pr_err("Invalid wValue 0x%04x\n", setup.wValue);
 			endpoint0_stall();
 			return;
 		}
 mxu_serial_nop_check_wIndex:
 		if (setup.wIndex >= MXU_SERIAL_NUM_PORTS) {
-			//serial_print("Invalid wIndex\n");
+			pr_err("Invalid wIndex 0x%04x\n", setup.wIndex);
 			endpoint0_stall();
 			return;
 		}
@@ -779,7 +806,7 @@ mxu_serial_nop_check_wIndex:
 			datalen = 4;
 			data = reply_buffer;
 		} else {
-			//serial_print("Invalid wLength\n");
+			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
 			endpoint0_stall();
 			return;
 		}
@@ -814,7 +841,7 @@ mxu_serial_nop_check_wIndex:
 			datalen = 4;
 			data = reply_buffer;
 		} else {
-			//serial_print("Invalid wLength\n");
+			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
 			endpoint0_stall();
 			return;
 		}
@@ -838,6 +865,8 @@ mxu_serial_nop_check_wIndex:
 	//serial_print(",");
 	//serial_phex16(datalen);
 	//serial_print("\n");
+pr_hex("setup send", data, datalen);
+pr_info("Sending response to 0x%x\n", setup.wRequestAndType);
 
 	if (datalen > setup.wLength) datalen = setup.wLength;
 	size = datalen;
@@ -998,16 +1027,20 @@ static void usb_control(uint32_t stat)
 #ifdef MXU_SERIAL_INTERFACE
 		switch (setup.wRequestAndType) {
 		  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate */
+pr_hex("Baud", buf, 4);
+pr_info("Speed is %u bps\n", buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0]);
 			// TODO Set baud value
 			endpoint0_transmit(NULL, 0);
 			break;
 
 		  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status */
+pr_hex("Line status", buf, 4);
 			// TODO Decode line status
 			endpoint0_transmit(NULL, 0);
 			break;
 
 		  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars */
+pr_hex("Xon/Xoff chars", buf, 2);
 			// TODO Decode XON/XOFF chars
 			endpoint0_transmit(NULL, 0);
 			break;
@@ -1042,10 +1075,11 @@ static void usb_control(uint32_t stat)
 		}
 
 		break;
-	  //default:
+	  default:
 		//serial_print("PID=unknown:");
 		//serial_phex(pid);
 		//serial_print("\n");
+pr_warn("PID=unknown:%lx\n", pid);
 	}
 	USB0_CTL = USB_CTL_USBENSOFEN; // clear TXSUSPENDTOKENBUSY bit
 }
