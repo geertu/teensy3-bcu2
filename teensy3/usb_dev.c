@@ -1280,13 +1280,23 @@ void usb_isr(void)
 				if (t == 0) usb_serial2_flush_callback();
 			}
 #endif
-#ifdef CDC3_DATA_INTERFACE
+#if defined(CDC3_DATA_INTERFACE) || \
+    (defined(MXU_SERIAL_INTERFACE) && MXU_SERIAL_NUM_PORTS > 2)
 			t = usb_cdc3_transmit_flush_timer;
 			if (t) {
 				usb_cdc3_transmit_flush_timer = --t;
 				if (t == 0) usb_serial3_flush_callback();
 			}
 #endif
+#ifdef MXU_SERIAL_INTERFACE
+#if MXU_SERIAL_NUM_PORTS > 3
+			t = usb_cdc4_transmit_flush_timer;
+			if (t) {
+				usb_cdc4_transmit_flush_timer = --t;
+				if (t == 0) usb_serial4_flush_callback();
+			}
+#endif
+#endif // MXU_SERIAL_INTERFACE
 #ifdef SEREMU_INTERFACE
 			t = usb_seremu_transmit_flush_timer;
 			if (t) {

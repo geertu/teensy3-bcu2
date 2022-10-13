@@ -55,6 +55,12 @@ usb_serial3_class SerialUSB2;
 #if MXU_SERIAL_NUM_PORTS > 1
 usb_serial2_class SerialUSB1;
 #endif
+#if MXU_SERIAL_NUM_PORTS > 2
+usb_serial3_class SerialUSB2;
+#endif
+#if MXU_SERIAL_NUM_PORTS > 3
+usb_serial4_class SerialUSB3;
+#endif
 #endif // MXU_SERIAL_INTERFACE
 
 #ifdef MIDI_INTERFACE
@@ -111,3 +117,5 @@ void serialEventUSB1() __attribute__((weak));
 void serialEventUSB1() {}
 void serialEventUSB2() __attribute__((weak));
 void serialEventUSB2() {}
+void serialEventUSB3() __attribute__((weak));
+void serialEventUSB3() {}
