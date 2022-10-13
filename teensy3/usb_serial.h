@@ -33,20 +33,29 @@
 
 #include "usb_desc.h"
 
-#if (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE)) || defined(USB_DISABLED)
+#if (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE)) || \
+    defined(MXU_SERIAL_INTERFACE) || defined(USB_DISABLED)
 
 #include <inttypes.h>
 
 #if F_CPU >= 20000000 && !defined(USB_DISABLED)
 
 #include "core_pins.h" // for millis()
+
+#if (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE))
 #include "usb_serial_port.h"
+#endif // CDC_STATUS_INTERFACE && CDC_DATA_INTERFACE
+
+#ifdef MXU_SERIAL_INTERFACE
+#include "mxu_serial_port.h"
+#endif // MXU_SERIAL_INTERFACE
 
 // C language implementation
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#if (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE))
 static inline int usb_serial_getchar(void)
 {
 	return __usb_serial_getchar(&usb_serial_ports[0]);
@@ -106,6 +115,67 @@ static inline uint32_t usb_serial_get_baud(void)
 {
 	return usb_cdc_line_coding[0];
 }
+#endif // CDC_STATUS_INTERFACE && CDC_DATA_INTERFACE
+
+#ifdef MXU_SERIAL_INTERFACE
+static inline int usb_serial_getchar(void)
+{
+	return __mxu_serial_getchar(&mxu_serial_ports[0]);
+}
+
+static inline int usb_serial_peekchar(void)
+{
+	return __mxu_serial_peekchar(&mxu_serial_ports[0]);
+}
+
+static inline int usb_serial_available(void)
+{
+	return __mxu_serial_available(&mxu_serial_ports[0]);
+}
+
+static inline int usb_serial_read(void *buffer, uint32_t size)
+{
+	return __mxu_serial_read(&mxu_serial_ports[0], buffer, size);
+}
+
+static inline void usb_serial_flush_input(void)
+{
+	__mxu_serial_flush_input(&mxu_serial_ports[0]);
+}
+
+static inline int usb_serial_putchar(uint8_t c)
+{
+	return __mxu_serial_putchar(&mxu_serial_ports[0], c);
+}
+
+static inline int usb_serial_write(const void *buffer, uint32_t size)
+{
+	return __mxu_serial_write(&mxu_serial_ports[0], buffer, size);
+}
+
+static inline int usb_serial_write_buffer_free(void)
+{
+	return __mxu_serial_write_buffer_free(&mxu_serial_ports[0]);
+}
+
+static inline void usb_serial_flush_output(void)
+{
+	__mxu_serial_flush_output(&mxu_serial_ports[0]);
+}
+
+static inline void usb_serial_flush_callback(void)
+{
+	__mxu_serial_flush_callback(&mxu_serial_ports[0]);
+}
+
+// FIXME Yeah, bad name, but kept for compatibility with standard usb_serial
+#define usb_cdc_transmit_flush_timer	mxu_serial_ports[0].transmit_flush_timer
+
+static inline uint32_t usb_serial_get_baud(void)
+{
+	return 0;	// FIXME
+}
+#endif // MXU_SERIAL_INTERFACE
 
 #ifdef __cplusplus
 }
@@ -149,6 +219,7 @@ public:
 	using Print::write;
         void send_now(void) { usb_serial_flush_output(); }
         uint32_t baud(void) { return usb_serial_get_baud(); }
+#if (defined(CDC_STATUS_INTERFACE) && defined(CDC_DATA_INTERFACE))
         uint8_t stopbits(void) { uint8_t b = usb_cdc_line_coding[1]; if (!b) b = 1; return b; }
         uint8_t paritytype(void) { return usb_cdc_line_coding[1] >> 8; } // 0=none, 1=odd, 2=even
         uint8_t numbits(void) { return usb_cdc_line_coding[1] >> 16; }
@@ -159,6 +230,18 @@ public:
 		return usb_configuration && (usb_cdc_line_rtsdtr & USB_SERIAL_DTR) &&
 		((uint32_t)(systick_millis_count - usb_cdc_line_rtsdtr_millis) >= 15);
 	}
+#endif // CDC_STATUS_INTERFACE && CDC_DATA_INTERFACE
+#ifdef MXU_SERIAL_INTERFACE
+        uint8_t stopbits(void) { return 0; /* FIXME */ }
+        uint8_t paritytype(void) { return 0; /* FIXME */ }
+        uint8_t numbits(void) { return 0; /* FIXME */ }
+        uint8_t dtr(void) { return 0; /* FIXME */ }
+        uint8_t rts(void) { return 0; /* FIXME */ }
+        operator bool() {
+		yield();
+		return true; // FIXME
+	}
+#endif // MXU_SERIAL_INTERFACE
 	size_t readBytes(char *buffer, size_t length) {
 		size_t count=0;
 		unsigned long startMillis = millis();

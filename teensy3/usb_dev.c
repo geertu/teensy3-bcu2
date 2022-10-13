@@ -1265,14 +1265,15 @@ void usb_isr(void)
 				usb_reboot_timer = --t;
 				if (!t) _reboot_Teensyduino_();
 			}
-#ifdef CDC_DATA_INTERFACE
+#if defined(CDC_DATA_INTERFACE) || defined(MXU_SERIAL_INTERFACE)
 			t = usb_cdc_transmit_flush_timer;
 			if (t) {
 				usb_cdc_transmit_flush_timer = --t;
 				if (t == 0) usb_serial_flush_callback();
 			}
 #endif
-#ifdef CDC2_DATA_INTERFACE
+#if defined(CDC2_DATA_INTERFACE) || \
+    (defined(MXU_SERIAL_INTERFACE) && MXU_SERIAL_NUM_PORTS > 1)
 			t = usb_cdc2_transmit_flush_timer;
 			if (t) {
 				usb_cdc2_transmit_flush_timer = --t;
