@@ -106,7 +106,7 @@ static void cmd_version(int argc, char *argv[])
 
 	/* usb_string_serial_number_default is an ASCII number */
 	for (i = 0; i < sizeof(sn); i++)
-	    sn[i] = usb_string_serial_number.wString[i];
+		sn[i] = usb_string_serial_number.wString[i];
 
 	printf("BFF version %s, Device SerialNumber %s\n", gitversion, sn);
 }
