@@ -195,6 +195,8 @@ int __mxu_serial_getchar(struct mxu_serial_port *port)
 	return c;
 }
 
+// FIXME send events
+
 // peek at the next character, or -1 if nothing received
 int __mxu_serial_peekchar(struct mxu_serial_port *port)
 {
