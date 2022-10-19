@@ -42,8 +42,8 @@
 
 #include "kinetis.h"
 #include "HardwareSerial.h"
-extern __attribute__((__format__(printf, 1, 2))) int serial_printf(const char *fmt, ...);
-#define printf			serial_printf
+extern __attribute__((__format__(printf, 1, 2))) int usb_serial_printf(const char *fmt, ...);
+#define printf			usb_serial_printf
 #define ESC_NORMAL		"\e[0m"
 #define ESC_BLACK		"\e[31m"
 #define ESC_RED			"\e[31m"
@@ -178,7 +178,7 @@ volatile uint8_t usb_reboot_timer = 0;
 
 static void endpoint0_stall(void)
 {
-pr_err("%s\n", __func__);
+//pr_err("%s\n", __func__);
 	USB0_ENDPT0 = USB_ENDPT_EPSTALL | USB_ENDPT_EPRXEN | USB_ENDPT_EPTXEN | USB_ENDPT_EPHSHK;
 }
 
@@ -529,7 +529,7 @@ static void usb_setup(void)
 		break;
 #endif
 
-#if 1
+#if 0
 #define mxu_dbg(req)	pr_info("%s wRequestAndType %04x wValue %04x wIndex %04x wLength %04x\n", req, setup.wRequestAndType, setup.wValue, setup.wIndex, setup.wLength)
 #else
 #define mxu_dbg(req)	do { } while (0)
@@ -865,8 +865,8 @@ mxu_serial_nop_check_wIndex:
 	//serial_print(",");
 	//serial_phex16(datalen);
 	//serial_print("\n");
-pr_hex("setup send", data, datalen);
-pr_info("Sending response to 0x%x\n", setup.wRequestAndType);
+//pr_info("Sending response to 0x%x\n", setup.wRequestAndType);
+//pr_hex("setup send", data, datalen);
 
 	if (datalen > setup.wLength) datalen = setup.wLength;
 	size = datalen;
@@ -1027,20 +1027,20 @@ static void usb_control(uint32_t stat)
 #ifdef MXU_SERIAL_INTERFACE
 		switch (setup.wRequestAndType) {
 		  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate */
-pr_hex("Baud", buf, 4);
-pr_info("Speed is %u bps\n", buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0]);
+//pr_hex("Baud", buf, 4);
+//pr_info("Speed is %u bps\n", buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0]);
 			// TODO Set baud value
 			endpoint0_transmit(NULL, 0);
 			break;
 
 		  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status */
-pr_hex("Line status", buf, 4);
+//pr_hex("Line status", buf, 4);
 			// TODO Decode line status
 			endpoint0_transmit(NULL, 0);
 			break;
 
 		  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars */
-pr_hex("Xon/Xoff chars", buf, 2);
+//pr_hex("Xon/Xoff chars", buf, 2);
 			// TODO Decode XON/XOFF chars
 			endpoint0_transmit(NULL, 0);
 			break;
@@ -1075,11 +1075,11 @@ pr_hex("Xon/Xoff chars", buf, 2);
 		}
 
 		break;
-	  default:
+	  //default:
 		//serial_print("PID=unknown:");
 		//serial_phex(pid);
 		//serial_print("\n");
-pr_warn("PID=unknown:%lx\n", pid);
+//pr_warn("PID=unknown:%lx\n", pid);
 	}
 	USB0_CTL = USB_CTL_USBENSOFEN; // clear TXSUSPENDTOKENBUSY bit
 }
