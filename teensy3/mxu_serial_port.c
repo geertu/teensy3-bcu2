@@ -43,7 +43,9 @@
 // FIXME debug start
 #include "HardwareSerial.h"
 extern __attribute__((__format__(printf, 1, 2))) int serial_printf(const char *fmt, ...);
-#define printf			serial_printf
+extern __attribute__((__format__(printf, 1, 2))) int usb_serial_printf(const char *fmt, ...);
+//#define printf			serial_printf
+#define printf			usb_serial_printf
 #define ESC_NORMAL		"\e[0m"
 #define ESC_BLACK		"\e[31m"
 #define ESC_RED			"\e[31m"
@@ -122,7 +124,7 @@ static void mxu_usb_demux_rx(void)
 	unsigned int idx, len;
 
 	while ((rx = usb_rx(MXU_RX_ENDPOINT))) {
-pr_info("%s: packet len %u\n", __func__, rx->len);
+//pr_info("%s: packet len %u\n", __func__, rx->len);
 		if (rx->len < MXU_HDR_SIZE) {
 			pr_err("%s: Short packet len %u\n", __func__, rx->len);
 			usb_free(rx);
@@ -131,7 +133,7 @@ pr_info("%s: packet len %u\n", __func__, rx->len);
 
 		idx = rx->buf[0] << 8 | rx->buf[1];
 		len = rx->buf[2] << 8 | rx->buf[3];
-pr_info("%s: %u bytes for port %u\n", __func__, len, idx);
+//pr_info("%s: %u bytes for port %u\n", __func__, len, idx);
 
 		if (idx >= MXU_SERIAL_NUM_PORTS) {
 			pr_err("%s: Invalid port %u\n", __func__, idx);
@@ -187,8 +189,8 @@ static struct usb_packet_struct *mxu_usb_rx(struct mxu_serial_port *port)
 	port->rx_queue_head = rx->next;
 	rx->next = NULL;	// FIXME needed?
 	port->rx_queue_bytes -= rx->len - MXU_HDR_SIZE;
-pr_info("%s: %u bytes for port %u\n", __func__, rx->len - MXU_HDR_SIZE, port - mxu_serial_ports);
-pr_hex("rx", rx->buf + MXU_HDR_SIZE, rx->len - MXU_HDR_SIZE);
+//pr_info("%s: %u bytes for port %u\n", __func__, rx->len - MXU_HDR_SIZE, port - mxu_serial_ports);
+//pr_hex("rx", rx->buf + MXU_HDR_SIZE, rx->len - MXU_HDR_SIZE);
 	return rx;
 }
 
@@ -198,8 +200,8 @@ static void mxu_usb_tx(struct usb_packet_struct *tx)
 	tx->buf[2] = 0;
 	tx->buf[3] = tx->len - MXU_HDR_SIZE;
 
-pr_info("%s: port %u packet len %u\n", __func__, tx->buf[0] << 8 | tx->buf[1], tx->len);
-pr_hex("tx", tx->buf, tx->len);
+//pr_info("%s: port %u packet len %u\n", __func__, tx->buf[0] << 8 | tx->buf[1], tx->len);
+//pr_hex("tx", tx->buf, tx->len);
 	usb_tx(MXU_TX_ENDPOINT, tx);
 }
 
