@@ -1382,6 +1382,8 @@ void usb_isr(void)
 	if ((status & USB_ISTAT_TOKDNE /* 08 */ )) {
 		uint8_t endpoint;
 		stat = USB0_STAT;
+delay(1);
+//delayMicroseconds(200);
 		//serial_print("token: ep=");
 		//serial_phex(stat >> 4);
 		//serial_print(stat & 0x08 ? ",tx" : ",rx");
