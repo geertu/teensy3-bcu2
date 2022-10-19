@@ -115,48 +115,80 @@ struct mxu_serial_port mxu_serial_ports[MXU_SERIAL_NUM_PORTS] = {
 #endif
 };
 
+static void mxu_usb_demux_rx(void)
+{
+	struct usb_packet_struct *rx;
+	struct mxu_serial_port *port;
+	unsigned int idx, len;
+
+	while ((rx = usb_rx(MXU_RX_ENDPOINT))) {
+pr_info("%s: packet len %u\n", __func__, rx->len);
+		if (rx->len < MXU_HDR_SIZE) {
+			pr_err("%s: Short packet len %u\n", __func__, rx->len);
+			usb_free(rx);
+			continue;
+		}
+
+		idx = rx->buf[0] << 8 | rx->buf[1];
+		len = rx->buf[2] << 8 | rx->buf[3];
+pr_info("%s: %u bytes for port %u\n", __func__, len, idx);
+
+		if (idx >= MXU_SERIAL_NUM_PORTS) {
+			pr_err("%s: Invalid port %u\n", __func__, idx);
+			usb_free(rx);
+			continue;
+		}
+
+		if (rx->len < MXU_HDR_SIZE + len) {
+			pr_err("%s: Long segment len %u\n", __func__, len);
+			usb_free(rx);
+			continue;
+		}
+
+		// While the Linux driver supports receiving multiple segments
+		// in a single packet, it never sends packets containing more
+		// than one segment.
+		// Hence keep the code simple by assuming there is only a
+		// single segment.
+		if (rx->len > MXU_HDR_SIZE + len)
+			pr_warn("%s: Ignoring secondary segments\n", __func__);
+
+		// Strip the header
+		rx->index = MXU_HDR_SIZE;
+		rx->len = MXU_HDR_SIZE + len;
+
+		// Enqueue packet
+		rx->next = NULL;
+		port = &mxu_serial_ports[idx];
+		if (port->rx_queue_head) {
+			port->rx_queue_tail->next = rx;
+			port->rx_queue_tail = rx;
+		} else {
+			port->rx_queue_head = rx;
+			port->rx_queue_tail = rx;
+		}
+		port->rx_queue_bytes += len;
+	}
+}
+
 static struct usb_packet_struct *mxu_usb_rx(struct mxu_serial_port *port)
 {
-	struct usb_packet_struct *rx = usb_rx(MXU_RX_ENDPOINT);
-	unsigned int idx = (port - mxu_serial_ports);
-	unsigned int pidx, plen;
+	struct usb_packet_struct *rx;
 
+	rx = port->rx_queue_head;
+	if (!rx) {
+		mxu_usb_demux_rx();
+		rx = port->rx_queue_head;
+	}
 	if (!rx)
 		return NULL;
 
-pr_info("%s: port %u packet len %u index %u\n", __func__, idx, rx->len, rx->index);
-
-	if (rx->len < MXU_HDR_SIZE) {
-		pr_err("%s:%u: Short packet len %u\n", __func__, __LINE__, rx->len);
-		usb_free(rx);
-		return NULL;
-	}
-
-	pidx = rx->buf[0] << 8 | rx->buf[1];
-	plen = rx->buf[2] << 8 | rx->buf[3];
-
-if (pidx != idx) pr_warn("%s:%u: idx/pidx mismatch %u != %u\n", __func__, __LINE__, idx, pidx); // FIXME
-	if (rx->len < MXU_HDR_SIZE + plen) {
-		pr_err("%s:%u: Short packet len %u\n", __func__, __LINE__, rx->len);
-		usb_free(rx);
-		return NULL;
-
-	}
-
-	// While the Linux driver supports receiving multiple segments in a
-	// single packet, it never sends packets containing more than one
-	// segment.
-	// Hence we keep the code simple by assuming there is only one segment.
-	if (rx->len > MXU_HDR_SIZE + plen)
-		pr_warn("%s:%u: Ignoring secondary segments\n", __func__, __LINE__);
-
-	// Strip the header
-	rx->index = MXU_HDR_SIZE;
-	rx->len = MXU_HDR_SIZE + plen;
-
-pr_info("%s: %u bytes for port %u\n", __func__, plen, pidx);
-pr_hex("rx", rx->buf + MXU_HDR_SIZE, plen);
-
+	// Dequeue packet
+	port->rx_queue_head = rx->next;
+	rx->next = NULL;	// FIXME needed?
+	port->rx_queue_bytes -= rx->len - MXU_HDR_SIZE;
+pr_info("%s: %u bytes for port %u\n", __func__, rx->len - MXU_HDR_SIZE, port - mxu_serial_ports);
+pr_hex("rx", rx->buf + MXU_HDR_SIZE, rx->len - MXU_HDR_SIZE);
 	return rx;
 }
 
@@ -216,8 +248,9 @@ int __mxu_serial_peekchar(struct mxu_serial_port *port)
 int __mxu_serial_available(struct mxu_serial_port *port)
 {
 	int count;
-	// FIXME Count the actual number of bytes destined for this port
-	count = usb_rx_byte_count(MXU_RX_ENDPOINT);
+
+	mxu_usb_demux_rx();
+	count = port->rx_queue_bytes;
 	if (port->rx_packet)
 		count += port->rx_packet->len - port->rx_packet->index;
 	if (count == 0)

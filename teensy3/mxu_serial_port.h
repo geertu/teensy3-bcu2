@@ -50,6 +50,10 @@ struct mxu_serial_port {
 	struct usb_packet_struct *rx_packet;
 	struct usb_packet_struct *tx_packet;
 	volatile uint8_t tx_noautoflush;
+
+	struct usb_packet_struct *rx_queue_head;
+	struct usb_packet_struct *rx_queue_tail;
+	unsigned int rx_queue_bytes;
 };
 
 extern struct mxu_serial_port mxu_serial_ports[MXU_SERIAL_NUM_PORTS];
