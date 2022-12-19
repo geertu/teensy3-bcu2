@@ -159,17 +159,17 @@ static void test(void)
 		if (!ch)
 			rgb_write(NUM_RGB_CH - 1, 0);
 		else
-			digitalWrite(pin_key[ch - 1], 1);
+			key_set(ch - 1, 0);
 
 		printf("Pulsing key %c\n", '0' + ch);
-		digitalWrite(pin_key[ch], 0);
+		key_set(ch, 1);
 		return;
 	}
 
 	ch -= NUM_KEY_CH;
 	if (ch < NUM_POWER_CH) {
 		if (!ch)
-			digitalWrite(pin_key[NUM_KEY_CH - 1], 1);
+			key_set(NUM_KEY_CH - 1, 0);
 		else
 			power_set(ch - 1, 0);
 
@@ -243,11 +243,6 @@ static void leds_init(void)
 
 	pinMode(pin_heartbeat, OUTPUT);
 
-	for (i = 0; i < NUM_KEY_CH; i++) {
-		pinMode(pin_key[i], OUTPUT);
-		digitalWrite(pin_key[i], 1);
-	}
-
 	for (i = 0; i < NUM_GPIO_CH; i++) {
 		pinMode(pin_gpio[i], OUTPUT);
 		digitalWrite(pin_gpio[i], 0);
@@ -268,6 +263,7 @@ int main(int argc, char *argv[])
 	env_init();
 	leds_init();
 	power_init();
+	key_init();
 	twi_init();
 	measure_init();
 	console_init();

@@ -20,7 +20,10 @@ const uint8_t pin_rgb[NUM_RGB_CH * 3] = {
 
 static const uint8_t pin_power[NUM_POWER_CH] = { 7, 17 };
 
+static const uint8_t pin_key[NUM_KEY_CH] = { 8, 11, 12, 14, 15, 16 };
+
 static char power_cache[NUM_POWER_CH];
+static char key_cache[NUM_KEY_CH];
 
 void power_init(void)
 {
@@ -43,6 +46,26 @@ int power_get(unsigned int ch)
 	return power_cache[ch];
 }
 
-const uint8_t pin_key[NUM_KEY_CH] = { 8, 11, 12, 14, 15, 16 };
+void key_init(void)
+{
+	unsigned int i;
+
+	for (i = 0; i < NUM_KEY_CH; i++) {
+		pinMode(pin_key[i], OUTPUT);
+		digitalWrite(pin_key[i], 1);
+	}
+}
+
+void key_set(unsigned int ch, int on)
+{
+	/* Keys are active-low! */
+	digitalWrite(pin_key[ch], !on);
+	key_cache[ch] = on;
+}
+
+int key_get(unsigned int ch)
+{
+	return key_cache[ch];
+}
 
 const uint8_t pin_gpio[NUM_GPIO_CH] = { 2, 23 };

@@ -316,7 +316,6 @@ static void cmd_sample(int argc, char *argv[])
 
 static void cmd_key(int argc, char *argv[])
 {
-	static char cache[NUM_KEY_CH];
 	unsigned int i;
 	int ch, state;
 
@@ -334,7 +333,7 @@ static void cmd_key(int argc, char *argv[])
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_KEY_CH)
-			printf("%d\n", cache[i]);
+			printf("%d\n", key_get(i));
 		return;
 	}
 
@@ -343,26 +342,22 @@ static void cmd_key(int argc, char *argv[])
 		return;
 
 	for_each_selected_channel(i, ch, NUM_KEY_CH) {
-		/* Keys are active-low! */
 		switch (state) {
 		case STATE_ON:
 			printf("Switching key %c %s\n", '0' + i, "on");
-			digitalWrite(pin_key[i], 0);
-			cache[i] = 1;
+			key_set(i, 1);
 			break;
 
 		case STATE_OFF:
 			printf("Switching key %c %s\n", '0' + i, "off");
-			digitalWrite(pin_key[i], 1);
-			cache[i] = 0;
+			key_set(i, 0);
 			break;
 
 		case STATE_PULSE:
 			printf("Pulsing key %c\n", '0' + i);
-			digitalWrite(pin_key[i], 0);
+			key_set(i, 1);
 			delay(KEY_PULSE_MS);
-			digitalWrite(pin_key[i], 1);
-			cache[i] = 0;
+			key_set(i, 0);
 			break;
 		}
 	}
