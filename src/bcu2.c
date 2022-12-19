@@ -171,17 +171,17 @@ static void test(void)
 		if (!ch)
 			digitalWrite(pin_key[NUM_KEY_CH - 1], 1);
 		else
-			digitalWrite(pin_power[ch - 1], 0);
+			power_set(ch - 1, 0);
 
 		printf("Powering channel %c\n", 'A' + ch);
-		digitalWrite(pin_power[ch], 1);
+		power_set(ch, 1);
 		return;
 	}
 
 	ch -= NUM_POWER_CH;
 	if (ch < NUM_GPIO_CH) {
 		if (!ch)
-			digitalWrite(pin_power[NUM_POWER_CH - 1], 0);
+			power_set(NUM_POWER_CH - 1, 0);
 		else
 			digitalWrite(pin_gpio[ch - 1], 0);
 
@@ -243,11 +243,6 @@ static void leds_init(void)
 
 	pinMode(pin_heartbeat, OUTPUT);
 
-	for (i = 0; i < NUM_POWER_CH; i++) {
-		pinMode(pin_power[i], OUTPUT);
-		digitalWrite(pin_power[i], 0);
-	}
-
 	for (i = 0; i < NUM_KEY_CH; i++) {
 		pinMode(pin_key[i], OUTPUT);
 		digitalWrite(pin_key[i], 1);
@@ -272,6 +267,7 @@ int main(int argc, char *argv[])
 {
 	env_init();
 	leds_init();
+	power_init();
 	twi_init();
 	measure_init();
 	console_init();

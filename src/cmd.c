@@ -257,7 +257,6 @@ found:
 
 static void cmd_power(int argc, char *argv[])
 {
-	static char cache[NUM_POWER_CH];
 	unsigned int i;
 	int ch, state;
 
@@ -275,7 +274,7 @@ static void cmd_power(int argc, char *argv[])
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_POWER_CH)
-			printf("%d\n", cache[i]);
+			printf("%d\n", power_get(i));
 		return;
 	}
 
@@ -286,8 +285,7 @@ static void cmd_power(int argc, char *argv[])
 	for_each_selected_channel(i, ch, NUM_POWER_CH) {
 		printf("Powering channel %c %s\n", 'A' + i,
 		       state ? "on" : "off");
-		digitalWrite(pin_power[i], state);
-		cache[i] = state;
+		power_set(i, state);
 	}
 }
 
