@@ -1,7 +1,7 @@
 //
 // Power Measurement
 //
-// © Copyright 2019-2020 Glider bv
+// © Copyright 2019-2020, 2022 Glider bv
 //
 // This file is subject to the terms and conditions of the GNU General Public
 // License, version 2.
@@ -32,10 +32,10 @@ struct avgs {
 	unsigned int avg15;
 };
 
-static struct avgs vbus[2] = { { 0xffffffff, }, { 0xffffffff, } };
-static struct avgs vshunt[2] = { { 0xffffffff, }, { 0xffffffff, } };
-static struct avgs power[2] = { { 0xffffffff, }, { 0xffffffff, } };
-static struct avgs current[2] = { { 0xffffffff, }, { 0xffffffff, } };
+static struct avgs vbus[NUM_POWER_CH] = { { 0xffffffff, }, { 0xffffffff, } };
+static struct avgs vshunt[NUM_POWER_CH] = { { 0xffffffff, }, { 0xffffffff, } };
+static struct avgs power[NUM_POWER_CH] = { { 0xffffffff, }, { 0xffffffff, } };
+static struct avgs current[NUM_POWER_CH] = { { 0xffffffff, }, { 0xffffffff, } };
 
 static void avgs_update(struct avgs *avgs, unsigned int val)
 {
@@ -57,7 +57,7 @@ static int measure(void)
 	unsigned int ch;
 	static int n;
 
-	for (ch = 0; ch < 2; ch++) {
+	for (ch = 0; ch < NUM_POWER_CH; ch++) {
 		if (!(ina219_probed & BIT(ch)))
 			continue;
 
@@ -74,7 +74,7 @@ static int measure(void)
 		printf("     Vbus      Vshunt     Power                         Current\n"
 		       "   --------  ---------  ----------------------------  ------------------------\n");
 
-	for (ch = 0; ch < 2; ch++) {
+	for (ch = 0; ch < NUM_POWER_CH; ch++) {
 		if (!(ina219_probed & BIT(ch)))
 			continue;
 
@@ -102,7 +102,7 @@ void measure_init(void)
 	unsigned int ch;
 	int x;
 
-	for (ch = 0; ch < 2; ch++) {
+	for (ch = 0; ch < NUM_POWER_CH; ch++) {
 		x = ina219_init(ch);
 		if (x < 0) {
 			pr_err("Initialization of INA219-%u failed: %d\n", ch,
