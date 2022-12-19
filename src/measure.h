@@ -8,3 +8,5 @@
 //
 
 extern void measure_init(void);
+extern void measure_channel(unsigned int ch, unsigned int *mV,
+			    unsigned int *mA, unsigned int *mW);

@@ -7,6 +7,7 @@
 // License, version 2.
 //
 
+#include "board.h"
 #include "cmd.h"
 #include "ina219.h"
 #include "measure.h"
@@ -89,6 +90,19 @@ static int measure(void)
 	}
 
 	return 0;
+}
+
+void measure_channel(unsigned int ch, unsigned int *mV, unsigned int *mA,
+		     unsigned int *mW)
+{
+	if (ch > NUM_POWER_CH || !(ina219_probed & BIT(ch))) {
+		*mV = *mA = *mW = 0;
+		return;
+	}
+
+	*mV = vbus[ch].curr;
+	*mA = current[ch].curr;
+	*mW = power[ch].curr;
 }
 
 static struct task task_measure = {
