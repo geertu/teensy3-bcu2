@@ -16,6 +16,7 @@
 #include "cmd.h"
 #include "env.h"
 #include "input.h"
+#include "measure.h"
 #include "print.h"
 #include "rgb.h"
 #include "util.h"
@@ -290,6 +291,29 @@ static void cmd_power(int argc, char *argv[])
 	}
 }
 
+static void cmd_sample(int argc, char *argv[])
+{
+	unsigned int i, mV, mA, mW;
+	int ch;
+
+	if (argc < 1 || argc > 1 || !part_strncasecmp(argv[0], "help", 1)) {
+		printf("Usage: sample <channel>\n\n");
+		printf("Valid channels are A..%c|0..%u|ALL\n",
+		       'A' + NUM_POWER_CH - 1, NUM_POWER_CH - 1);
+		return;
+	}
+
+	ch = decode_channel(argv[0], "power", NUM_POWER_CH);
+	if (ch < -1)
+		return;
+
+	for_each_selected_channel(i, ch, NUM_POWER_CH) {
+		measure_channel(i, &mV, &mA, &mW);
+		printf("%u.%03u V / %u.%03u A / %u.%03u W\n", mV / 1000,
+		       mV % 1000, mA / 1000, mA % 1000, mW / 1000, mW % 1000);
+	}
+}
+
 #define KEY_PULSE_MS	200
 
 static void cmd_key(int argc, char *argv[])
@@ -540,7 +564,8 @@ static struct cmd commands[] = {
 	{ "Power", "Control power", cmd_power },
 	{ "PRintenv", "Print all environment variables", cmd_printenv },
 	{ "RGB", "Show a color", cmd_rgb },
-	{ "Saveenv", "Save all environment variables", cmd_saveenv },
+	{ "Sample", "Sample power", cmd_sample },
+	{ "SAveenv", "Save all environment variables", cmd_saveenv },
 	{ "SEtenv", "Set the value of an environment variable", cmd_setenv },
 	{ "Test", "Test cycle through board features", cmd_test },
 	{ "Version", "Display software version", cmd_version },
