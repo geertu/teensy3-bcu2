@@ -365,7 +365,6 @@ static void cmd_key(int argc, char *argv[])
 
 static void cmd_gpio(int argc, char *argv[])
 {
-	static char cache[NUM_GPIO_CH];
 	unsigned int i;
 	int ch, state;
 
@@ -383,7 +382,7 @@ static void cmd_gpio(int argc, char *argv[])
 
 	if (argc < 2) {
 		for_each_selected_channel(i, ch, NUM_GPIO_CH)
-			printf("%d\n", cache[i]);
+			printf("%d\n", gpio_get(i));
 		return;
 	}
 
@@ -395,22 +394,19 @@ static void cmd_gpio(int argc, char *argv[])
 		switch (state) {
 		case STATE_ON:
 			printf("Switching GPIO %c %s\n", '0' + i, "on");
-			digitalWrite(pin_gpio[i], 1);
-			cache[i] = 1;
+			gpio_set(i, 1);
 			break;
 
 		case STATE_OFF:
 			printf("Switching GPIO %c %s\n", '0' + i, "off");
-			digitalWrite(pin_gpio[i], 0);
-			cache[i] = 0;
+			gpio_set(i, 0);
 			break;
 
 		case STATE_PULSE:
 			printf("Pulsing GPIO %c\n", '0' + i);
-			digitalWrite(pin_gpio[i], 1);
+			gpio_set(i, 1);
 			delay(KEY_PULSE_MS);
-			digitalWrite(pin_gpio[i], 0);
-			cache[i] = 0;
+			gpio_set(i, 0);
 			break;
 		}
 	}

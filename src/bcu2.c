@@ -183,17 +183,17 @@ static void test(void)
 		if (!ch)
 			power_set(NUM_POWER_CH - 1, 0);
 		else
-			digitalWrite(pin_gpio[ch - 1], 0);
+			gpio_set(ch - 1, 0);
 
 		printf("Pulsing GPIO %c\n", '0' + ch);
-		digitalWrite(pin_gpio[ch], 1);
+		gpio_set(ch, 1);
 		return;
 	}
 
 	ch -= NUM_GPIO_CH;
 	if (ch < NUM_UART_CH) {
 		if (!ch)
-			digitalWrite(pin_gpio[NUM_GPIO_CH - 1], 0);
+			gpio_set(NUM_GPIO_CH - 1, 0);
 
 		printf("Saying hello to UART channel %c\n", 'A' + ch);
 		if (!ch)
@@ -243,11 +243,6 @@ static void leds_init(void)
 
 	pinMode(pin_heartbeat, OUTPUT);
 
-	for (i = 0; i < NUM_GPIO_CH; i++) {
-		pinMode(pin_gpio[i], OUTPUT);
-		digitalWrite(pin_gpio[i], 0);
-	}
-
 	for (i = 0; i < NUM_RGB_CH * 3; i++) {
 		pinMode(pin_rgb[i], OUTPUT);
 		digitalWrite(pin_rgb[i], 1);
@@ -264,6 +259,7 @@ int main(int argc, char *argv[])
 	leds_init();
 	power_init();
 	key_init();
+	gpio_init();
 	twi_init();
 	measure_init();
 	console_init();
