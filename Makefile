@@ -25,6 +25,8 @@ M_OPT_N_WARN          := -Wall -Os
 # M_REPLACE_CORE := 1
 # Comment out the next line to disable auto dependencies generation
 M_AUTO_DEPENDENCIES := 1
+# Optional extra preprocessor flags
+# M_EXTRA=
 
 # Output path for binaries
 OUT_PATH          := bin
@@ -95,6 +97,7 @@ endif
 CPPFLAGS += -DF_CPU=$(M_CPU_CLOCK) -D$(M_CPU) -D$(M_USB_TYPE) -DLAYOUT_$(M_LAYOUT)
 CPPFLAGS += -DARDUINO=$(M_ARDUINO_VERSION) -DTEENSYDUINO=$(M_TEENSYDUINO_VERSION)
 CPPFLAGS += -DTEENSY_VERSION=$(M_TEENSY_VERSION) -DTEENSY_BOARD=$(M_BOARD)
+CPPFLAGS += $(M_EXTRA)
 CXXFLAGS  = -std=gnu++0x -felide-constructors -fno-exceptions -fno-rtti
 ASMFLAGS  = -x assembler-with-cpp
 CFLAGS    =
