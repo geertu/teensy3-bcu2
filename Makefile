@@ -27,7 +27,7 @@ M_OPT_N_WARN          := -Wall -Os
 M_AUTO_DEPENDENCIES := 1
 # Optional extra preprocessor flags
 # Uncomment the next line to enable support for the Power-Opto Extension Board
-# M_EXTRA=-DPOWER_OPTO_EXTENSION
+M_EXTRA=-DPOWER_OPTO_EXTENSION
 
 # Output path for binaries
 OUT_PATH          := bin
