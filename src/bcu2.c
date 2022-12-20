@@ -161,7 +161,7 @@ static void test(void)
 		else
 			key_set(ch - 1, 0);
 
-		printf("Pulsing key %c\n", '0' + ch);
+		printf("Pulsing key %u\n", ch);
 		key_set(ch, 1);
 		return;
 	}
@@ -185,7 +185,7 @@ static void test(void)
 		else
 			gpio_set(ch - 1, 0);
 
-		printf("Pulsing GPIO %c\n", '0' + ch);
+		printf("Pulsing GPIO %u\n", ch);
 		gpio_set(ch, 1);
 		return;
 	}

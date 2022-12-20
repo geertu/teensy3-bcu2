@@ -44,12 +44,26 @@ static int decode_channel(const char *arg, const char *name, unsigned int n)
 	if (!part_strncasecmp(arg, "ALL", 2))
 		return -1;
 
+	c = arg[0];
+	if (c >= '0' && c <= '9') {
+		int x = c - '0';
+
+		c = arg[1];
+		if (c) {
+			if (c < '0' || c > '9' || arg[2])
+				goto error;
+
+			x = 10 * x + c - '0';
+		}
+
+		if (x >= n)
+			goto error;
+
+		return x;
+	}
+
 	if (arg[1])
 		goto error;
-
-	c = arg[0];
-	if (c >= '0' && c < '0' + n)
-		return c - '0';
 
 	if (c >= 'A' && c < 'A' + n)
 		return c - 'A';
@@ -344,17 +358,17 @@ static void cmd_key(int argc, char *argv[])
 	for_each_selected_channel(i, ch, NUM_KEY_CH) {
 		switch (state) {
 		case STATE_ON:
-			printf("Switching key %c %s\n", '0' + i, "on");
+			printf("Switching key %u %s\n", i, "on");
 			key_set(i, 1);
 			break;
 
 		case STATE_OFF:
-			printf("Switching key %c %s\n", '0' + i, "off");
+			printf("Switching key %u %s\n", i, "off");
 			key_set(i, 0);
 			break;
 
 		case STATE_PULSE:
-			printf("Pulsing key %c\n", '0' + i);
+			printf("Pulsing key %u\n", i);
 			key_set(i, 1);
 			delay(KEY_PULSE_MS);
 			key_set(i, 0);
@@ -393,17 +407,17 @@ static void cmd_gpio(int argc, char *argv[])
 	for_each_selected_channel(i, ch, NUM_GPIO_CH) {
 		switch (state) {
 		case STATE_ON:
-			printf("Switching GPIO %c %s\n", '0' + i, "on");
+			printf("Switching GPIO %u %s\n", i, "on");
 			gpio_set(i, 1);
 			break;
 
 		case STATE_OFF:
-			printf("Switching GPIO %c %s\n", '0' + i, "off");
+			printf("Switching GPIO %u %s\n", i, "off");
 			gpio_set(i, 0);
 			break;
 
 		case STATE_PULSE:
-			printf("Pulsing GPIO %c\n", '0' + i);
+			printf("Pulsing GPIO %u\n", i);
 			gpio_set(i, 1);
 			delay(KEY_PULSE_MS);
 			gpio_set(i, 0);
