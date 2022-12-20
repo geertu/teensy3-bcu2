@@ -10,6 +10,8 @@
 #include <WProgram.h>
 
 #include "board.h"
+#include "pcf8574.h"
+#include "util.h"
 
 const uint8_t pin_heartbeat = 13;
 
@@ -18,11 +20,11 @@ const uint8_t pin_rgb[NUM_RGB_CH * 3] = {
     22, 21, 20
 };
 
-const uint8_t ina219_map[NUM_POWER_CH] = { 0, 1 };
+const uint8_t ina219_map[] = { 0, 1, 4, 5 };
 
-static const uint8_t pin_power[NUM_POWER_CH] = { 7, 17 };
+static const uint8_t pin_power[] = { 7, 17 };
 
-static const uint8_t pin_key[NUM_KEY_CH] = { 8, 11, 12, 14, 15, 16 };
+static const uint8_t pin_key[] = { 8, 11, 12, 14, 15, 16 };
 
 static const uint8_t pin_gpio[NUM_GPIO_CH] = { 2, 23 };
 
@@ -34,7 +36,7 @@ void power_init(void)
 {
 	unsigned int i;
 
-	for (i = 0; i < NUM_POWER_CH; i++) {
+	for (i = 0; i < ARRAY_SIZE(pin_power); i++) {
 		pinMode(pin_power[i], OUTPUT);
 		digitalWrite(pin_power[i], 0);
 	}
@@ -42,7 +44,16 @@ void power_init(void)
 
 void power_set(unsigned int ch, int on)
 {
-	digitalWrite(pin_power[ch], on);
+#ifdef POWER_OPTO_EXTENSION
+	if (ch >= ARRAY_SIZE(pin_power)) {
+		/* Active-low! */
+		pcf8574_gpio_set(0, ch == ARRAY_SIZE(pin_power) ? 0 : 7, !on);
+	} else
+#endif // POWER_OPTO_EXTENSION
+	{
+		digitalWrite(pin_power[ch], on);
+	}
+
 	power_cache[ch] = on;
 }
 
@@ -55,7 +66,7 @@ void key_init(void)
 {
 	unsigned int i;
 
-	for (i = 0; i < NUM_KEY_CH; i++) {
+	for (i = 0; i < ARRAY_SIZE(pin_key); i++) {
 		pinMode(pin_key[i], OUTPUT);
 		digitalWrite(pin_key[i], 1);
 	}
@@ -63,8 +74,17 @@ void key_init(void)
 
 void key_set(unsigned int ch, int on)
 {
-	/* Keys are active-low! */
-	digitalWrite(pin_key[ch], !on);
+#ifdef POWER_OPTO_EXTENSION
+	if (ch >= ARRAY_SIZE(pin_key)) {
+		/* Active-low! */
+		pcf8574_gpio_set(0, ch - ARRAY_SIZE(pin_key) + 1, !on);
+	} else
+#endif // POWER_OPTO_EXTENSION
+	{
+		/* Active-low! */
+		digitalWrite(pin_key[ch], !on);
+	}
+
 	key_cache[ch] = on;
 }
 

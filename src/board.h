@@ -12,8 +12,13 @@
 extern const uint8_t pin_heartbeat;
 
 #define NUM_RGB_CH		2
+#ifdef POWER_OPTO_EXTENSION
+#define NUM_POWER_CH		4
+#define NUM_KEY_CH		12
+#else
 #define NUM_POWER_CH		2
 #define NUM_KEY_CH		6
+#endif
 #define NUM_GPIO_CH		2
 #define NUM_UART_CH		2
 

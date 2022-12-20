@@ -19,6 +19,7 @@
 #include "input.h"
 #include "measure.h"
 #include "print.h"
+#include "pcf8574.h"
 #include "rgb.h"
 #include "task.h"
 #include "util.h"
@@ -261,6 +262,9 @@ int main(int argc, char *argv[])
 	key_init();
 	gpio_init();
 	twi_init();
+#ifdef POWER_OPTO_EXTENSION
+	pcf8574_init(0);
+#endif
 	measure_init();
 	console_init();
 	input_init();
