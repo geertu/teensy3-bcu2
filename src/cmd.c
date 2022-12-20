@@ -278,7 +278,7 @@ static void cmd_power(int argc, char *argv[])
 		printf("Usage: power <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_POWER_CH - 1, NUM_POWER_CH - 1);
-		printf("Valid states are ON|OFF|1|0\n");
+		printf("Valid states are ON|OFf|1|0\n");
 		return;
 	}
 
@@ -337,7 +337,7 @@ static void cmd_key(int argc, char *argv[])
 		printf("Usage: key <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_KEY_CH - 1, NUM_KEY_CH - 1);
-		printf("Valid states are ON|OFF|PULSE|1|0\n");
+		printf("Valid states are ON|OFf|Pulse|1|0\n");
 		return;
 	}
 
@@ -386,7 +386,7 @@ static void cmd_gpio(int argc, char *argv[])
 		printf("Usage: gpio <channel> <state>\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_GPIO_CH - 1, NUM_GPIO_CH - 1);
-		printf("Valid states are ON|OFF|PULSE|1|0\n");
+		printf("Valid states are ON|OFf|Pulse|1|0\n");
 		return;
 	}
 
