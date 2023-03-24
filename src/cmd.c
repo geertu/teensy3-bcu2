@@ -596,6 +596,8 @@ void cmd_run(char *line)
 		quote = '\0';
 		while (isspace(*line))
 			line++;
+		if (*line == '#')
+			*line = '\0';
 		if (!*line)
 			break;
 		if (*line == '\'' || *line == '"')
@@ -605,10 +607,10 @@ void cmd_run(char *line)
 			while (*line && *line != quote)
 				line++;
 		} else {
-			while (*line && !isspace(*line))
+			while (*line && !isspace(*line) && *line != '#')
 				line++;
 		}
-		if (*line)
+		if (*line && *line != '#')
 			*line++ = '\0';
 	}
 	if (!argc)
