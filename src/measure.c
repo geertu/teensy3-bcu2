@@ -55,17 +55,18 @@ static unsigned int ina219_probed;
 
 static int measure(void)
 {
-	unsigned int ch;
+	unsigned int ch, ch2;
 	static int n;
 
 	for (ch = 0; ch < NUM_POWER_CH; ch++) {
 		if (!(ina219_probed & BIT(ch)))
 			continue;
 
-		avgs_update(&vbus[ch], ina219_get_bus_mV(ch));
-		avgs_update(&vshunt[ch], ina219_get_shunt_uV(ch));
-		avgs_update(&power[ch], ina219_get_power_mW(ch));
-		avgs_update(&current[ch], ina219_get_current_mA(ch));
+		ch2 = ina219_map[ch];
+		avgs_update(&vbus[ch], ina219_get_bus_mV(ch2));
+		avgs_update(&vshunt[ch], ina219_get_shunt_uV(ch2));
+		avgs_update(&power[ch], ina219_get_power_mW(ch2));
+		avgs_update(&current[ch], ina219_get_current_mA(ch2));
 	}
 
 	if (cmd_mode != CMD_MONITOR)
@@ -117,7 +118,7 @@ void measure_init(void)
 	int x;
 
 	for (ch = 0; ch < NUM_POWER_CH; ch++) {
-		x = ina219_init(ch);
+		x = ina219_init(ina219_map[ch]);
 		if (x < 0) {
 			pr_err("Initialization of INA219-%u failed: %d\n", ch,
 			       x);

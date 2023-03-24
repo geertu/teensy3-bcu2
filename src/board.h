@@ -18,6 +18,7 @@ extern const uint8_t pin_heartbeat;
 #define NUM_UART_CH		2
 
 extern const uint8_t pin_rgb[];
+extern const uint8_t ina219_map[];
 
 extern void power_init(void);
 extern void power_set(unsigned int ch, int on);

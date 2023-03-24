@@ -18,6 +18,8 @@ const uint8_t pin_rgb[NUM_RGB_CH * 3] = {
     22, 21, 20
 };
 
+const uint8_t ina219_map[NUM_POWER_CH] = { 0, 1 };
+
 static const uint8_t pin_power[NUM_POWER_CH] = { 7, 17 };
 
 static const uint8_t pin_key[NUM_KEY_CH] = { 8, 11, 12, 14, 15, 16 };
