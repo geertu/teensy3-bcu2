@@ -196,6 +196,11 @@ static int decode_hex_char(char c)
 	}
 }
 
+static int is_help(const char *cmd)
+{
+	return cmd[0] == '?' || !part_strncasecmp(cmd, "help", 1);
+}
+
 #define for_each_selected_channel(_i, _ch, _num_ch) \
 	for (_i = (_ch < 0 ? 0 : _ch); _i < (_ch < 0 ? _num_ch : _ch + 1); _i++)
 
@@ -214,7 +219,7 @@ static void cmd_rgb(int argc, char *argv[])
 		return;
 	}
 
-	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || argc > 2 || is_help(argv[0])) {
 		printf("Usage: rgb <list> | <channel> [<colorname> | #rgb | #rrggbb]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_RGB_CH - 1, NUM_RGB_CH - 1);
@@ -274,7 +279,7 @@ static void cmd_power(int argc, char *argv[])
 	unsigned int i;
 	int ch, state;
 
-	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || argc > 2 || is_help(argv[0])) {
 		printf("Usage: power <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_POWER_CH - 1, NUM_POWER_CH - 1);
@@ -308,7 +313,7 @@ static void cmd_sample(int argc, char *argv[])
 	unsigned int i, mV, mA, mW;
 	int ch;
 
-	if (argc < 1 || argc > 1 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || argc > 1 || is_help(argv[0])) {
 		printf("Usage: sample <channel>\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_POWER_CH - 1, NUM_POWER_CH - 1);
@@ -333,7 +338,7 @@ static void cmd_key(int argc, char *argv[])
 	unsigned int i;
 	int ch, state;
 
-	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || argc > 2 || is_help(argv[0])) {
 		printf("Usage: key <channel> [<state>]\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_KEY_CH - 1, NUM_KEY_CH - 1);
@@ -382,7 +387,7 @@ static void cmd_gpio(int argc, char *argv[])
 	unsigned int i;
 	int ch, state;
 
-	if (argc < 1 || argc > 2 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || argc > 2 || is_help(argv[0])) {
 		printf("Usage: gpio <channel> <state>\n\n");
 		printf("Valid channels are A..%c|0..%u|ALL\n",
 		       'A' + NUM_GPIO_CH - 1, NUM_GPIO_CH - 1);
@@ -458,7 +463,7 @@ static void cmd_i2c_get(int argc, char *argv[])
 	uint8_t reg, buf[4];
 	int res;
 
-	if (argc < 1 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || is_help(argv[0])) {
 		printf("Usage: i2c get <addr> [<reg> [b|w|l]]\n");
 		return;
 	}
@@ -523,7 +528,7 @@ static void cmd_i2c_set(int argc, char *argv[])
 	unsigned int addr, i;
 	int res;
 
-	if (argc < 1 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || is_help(argv[0])) {
 		printf("Usage: i2c set <addr> [<reg> [<data> ...]]\n");
 		return;
 	}
@@ -540,7 +545,7 @@ static void cmd_i2c_set(int argc, char *argv[])
 
 static void cmd_i2c(int argc, char *argv[])
 {
-	if (argc < 1 || !part_strncasecmp(argv[0], "help", 1)) {
+	if (argc < 1 || is_help(argv[0])) {
 		printf("Usage: i2c <cmd> ...\n\n");
 		printf("Valid commands are: Scan, Get, SEt\n");
 		return;
