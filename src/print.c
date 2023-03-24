@@ -20,11 +20,11 @@ int prefix ## _puts(const char *s)			\
 	int i;						\
 							\
 	for (i = 0; s[i]; i++) {			\
-		if (s[i] == '\r')			\
-			prefix ## _putchar('\n');	\
-		prefix ## _putchar(s[i]);		\
 		if (s[i] == '\n')			\
 			prefix ## _putchar('\r');	\
+		prefix ## _putchar(s[i]);		\
+		if (s[i] == '\r')			\
+			prefix ## _putchar('\n');	\
 	}						\
 	return i;					\
 }
