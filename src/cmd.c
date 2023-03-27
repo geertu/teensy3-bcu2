@@ -1,7 +1,7 @@
 //
 // Command Handling
 //
-// © Copyright 2019-2020 Glider bv
+// © Copyright 2019-2023 Glider bv
 //
 // This file is subject to the terms and conditions of the GNU General Public
 // License, version 2.
@@ -433,28 +433,35 @@ static void cmd_gpio(int argc, char *argv[])
 
 static void cmd_i2c_scan(void)
 {
-	unsigned int i, n;
+	unsigned int i;
 	int res;
 
-	for (i = I2C_ADDR_FIRST, n = 0; i <= I2C_ADDR_LAST; i++) {
+	printf("     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f");
+	for (i = 0; i < 0x80; i++) {
+		if (!(i % 0x10))
+			printf("\n%02x:", i & 0x70);
+
+		if (i < I2C_ADDR_FIRST || i > I2C_ADDR_LAST) {
+			printf("   ");
+			continue;
+		}
+
 		res = twi_writeTo(i, NULL, 0, true, true);
 		switch (res) {
 		case 0:
-			printf("Found I2C device at address %#02x\n", i);
-			n++;
+			printf(" %02x", i);
 			break;
 
 		case 2:	/* recv addr NACK */
+			printf(" --");
 			break;
 
 		default:
-			pr_err("I2C bus failure\n");
+			pr_err("\nI2C bus failure\n");
 			return;
 		}
 	}
-
-	if (!n)
-		printf("No I2C devices found\n");
+	printf("\n");
 }
 
 static void cmd_i2c_get(int argc, char *argv[])
