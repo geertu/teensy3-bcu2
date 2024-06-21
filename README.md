@@ -1,8 +1,8 @@
-# BCU/2 - Board Control Unit Duo (Teensy 3.2)
+# BCU/2+POX - Board Control Unit Duo + Power-Opto Extension Board (Teensy 3.2)
 
-This is the software for the BCU/2, which is a small board to control operation
-of two development boards, e.g. on your desk, or in a board farm
-(https://github.com/geertu/pcb-bcu2).
+This is the software for BCU/2+POX, which is a small board stack to control operation
+of four development boards, e.g. on your desk, or in a board farm
+(https://github.com/geertu/pcb-bcu2 and https://github.com/geertu/pcb-pox).
 
 ## Features
 
@@ -10,13 +10,13 @@ of two development boards, e.g. on your desk, or in a board farm
       - Interactive control channel (just type "help"),
       - Serial console channel A,
       - Serial console channel B.
-  - Power control (two channels),
-  - Voltage/current/power monitor (two channels),
+  - Power control (four channels),
+  - Voltage/current/power monitor (four channels),
   - Serial console (two channels),
-  - Opto-isolator output control (six channels),
+  - Opto-isolator output control (twelve channels),
   - RGB status LED control (two channels),
   - GPIO expansion control (two channels),
-  - I2C expansion,
+  - I2C expansion (used by the Power-Opto Extension Board),
   - Test mode exercising all outputs.
 
 ## Features still to be implemented
