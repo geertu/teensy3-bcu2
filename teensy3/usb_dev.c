@@ -540,7 +540,7 @@ static void usb_setup(void)
 		// Nothing to do
 		break;
 
-	  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate */
+	  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate
 		mxu_dbg("RQ_VENDOR_SET_BAUD");
 		if (setup.wLength < 4) {
 			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
@@ -549,7 +549,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status */
+	  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status
 		mxu_dbg("RQ_VENDOR_SET_LINE");
 		if (setup.wLength < 4) {
 			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
@@ -558,7 +558,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars */
+	  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars
 		mxu_dbg("RQ_VENDOR_SET_CHARS");
 		if (setup.wLength < 2) {
 			pr_err("Invalid wLength 0x%04x\n", setup.wLength);
@@ -567,7 +567,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x0440:	// RQ_VENDOR_SET_RTS - Set RTS */
+	  case 0x0440:	// RQ_VENDOR_SET_RTS - Set RTS
 		mxu_dbg("RQ_VENDOR_SET_RTS");
 		switch (setup.wValue) {
 		  case 0: // Disable
@@ -589,7 +589,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0540:	// RQ_VENDOR_SET_DTR - Set DTR */
+	  case 0x0540:	// RQ_VENDOR_SET_DTR - Set DTR
 		mxu_dbg("RQ_VENDOR_SET_DTR");
 		switch (setup.wValue) {
 		  case 0: // Disable
@@ -607,7 +607,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0640:	// RQ_VENDOR_SET_XONXOFF - Set auto Xon/Xoff */
+	  case 0x0640:	// RQ_VENDOR_SET_XONXOFF - Set auto Xon/Xoff
 		mxu_dbg("RQ_VENDOR_SET_XONXOFF");
 		switch (setup.wValue) {
 		  case 0: // Disable
@@ -625,7 +625,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0740:	// RQ_VENDOR_SET_RX_HOST_EN - Set RX host enable */
+	  case 0x0740:	// RQ_VENDOR_SET_RX_HOST_EN - Set RX host enable
 		mxu_dbg("RQ_VENDOR_SET_RX_HOST_EN");
 		switch (setup.wValue) {
 		  case 0: // Disable
@@ -643,7 +643,7 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0840:	// RQ_VENDOR_SET_OPEN - Set open/close port */
+	  case 0x0840:	// RQ_VENDOR_SET_OPEN - Set open/close port
 		mxu_dbg("RQ_VENDOR_SET_OPEN");
 		switch (setup.wValue) {
 		  case 0: // Close
@@ -659,18 +659,18 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0940:	// RQ_VENDOR_PURGE - Purge Rx/Tx buffer */
+	  case 0x0940:	// RQ_VENDOR_PURGE - Purge Rx/Tx buffer
 		mxu_dbg("RQ_VENDOR_PURGE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x0a40:	// RQ_VENDOR_SET_MCR - Set MCR register */
+	  case 0x0a40:	// RQ_VENDOR_SET_MCR - Set MCR register
 		mxu_dbg("RQ_VENDOR_SET_MCR");
 		// TODO Decode MCR in wValue
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0b40:	// RQ_VENDOR_SET_BREAK - Set Break signal */
+	  case 0x0b40:	// RQ_VENDOR_SET_BREAK - Set Break signal
 		mxu_dbg("RQ_VENDOR_SET_BREAK");
 		switch (setup.wValue) {
 		  case 0: // Disable
@@ -688,22 +688,22 @@ static void usb_setup(void)
 		}
 		goto mxu_serial_nop_check_wIndex;
 
-	  case 0x0c40:	// RQ_VENDOR_START_FW_DOWN - Start firmware download */
+	  case 0x0c40:	// RQ_VENDOR_START_FW_DOWN - Start firmware download
 		mxu_dbg("RQ_VENDOR_START_FW_DOWN");
 		// Nothing to do
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x0d40:	// RQ_VENDOR_STOP_FW_DOWN - Stop firmware download */
+	  case 0x0d40:	// RQ_VENDOR_STOP_FW_DOWN - Stop firmware download
 		mxu_dbg("RQ_VENDOR_STOP_FW_DOWN");
 		// Nothing to do
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x0e40:	// RQ_VENDOR_QUERY_FW_READY - Query if new firmware ready */
+	  case 0x0e40:	// RQ_VENDOR_QUERY_FW_READY - Query if new firmware ready
 		mxu_dbg("RQ_VENDOR_QUERY_FW_READY");
 		// Nothing to do
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x0f40:	// RQ_VENDOR_SET_FIFO_DISABLE - Set fifo disable */
+	  case 0x0f40:	// RQ_VENDOR_SET_FIFO_DISABLE - Set fifo disable
 		mxu_dbg("RQ_VENDOR_SET_FIFO_DISABLE");
 mxu_serial_nop_check_wValue_0_and_wIndex:
 		if (setup.wValue) {
@@ -720,71 +720,71 @@ mxu_serial_nop_check_wIndex:
 		// Nothing to do
 		break;
 
-	  case 0x1040:	// RQ_VENDOR_SET_INTERFACE - Set interface */
+	  case 0x1040:	// RQ_VENDOR_SET_INTERFACE - Set interface
 		mxu_dbg("RQ_VENDOR_SET_INTERFACE");
 		// Nothing to do
 		// Supports RS232 (wValue = 0) only
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x1140:	// RQ_VENDOR_SET_HIGH_PERFOR - Set hi-performance */
+	  case 0x1140:	// RQ_VENDOR_SET_HIGH_PERFOR - Set hi-performance
 		mxu_dbg("RQ_VENDOR_SET_HIGH_PERFOR");
 		// Nothing to do
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x1240:	// RQ_VENDOR_ERASE_BLOCK - Erase flash block */
+	  case 0x1240:	// RQ_VENDOR_ERASE_BLOCK - Erase flash block
 		mxu_dbg("RQ_VENDOR_ERASE_BLOCK");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1340:	// RQ_VENDOR_WRITE_PAGE - Write flash page */
+	  case 0x1340:	// RQ_VENDOR_WRITE_PAGE - Write flash page
 		mxu_dbg("RQ_VENDOR_WRITE_PAGE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1440:	// RQ_VENDOR_PREPARE_WRITE - Prepare write flash */
+	  case 0x1440:	// RQ_VENDOR_PREPARE_WRITE - Prepare write flash
 		mxu_dbg("RQ_VENDOR_PREPARE_WRITE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1540:	// RQ_VENDOR_CONFIRM_WRITE - Confirm write flash */
+	  case 0x1540:	// RQ_VENDOR_CONFIRM_WRITE - Confirm write flash
 		mxu_dbg("RQ_VENDOR_CONFIRM_WRITE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1640:	// RQ_VENDOR_LOCATE - Locate the device */
+	  case 0x1640:	// RQ_VENDOR_LOCATE - Locate the device
 		mxu_dbg("RQ_VENDOR_LOCATE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1740:	// RQ_VENDOR_START_ROM_DOWN - Start firmware download */
+	  case 0x1740:	// RQ_VENDOR_START_ROM_DOWN - Start firmware download
 		mxu_dbg("RQ_VENDOR_START_ROM_DOWN");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1840:	// RQ_VENDOR_ROM_DATA - Rom file data */
+	  case 0x1840:	// RQ_VENDOR_ROM_DATA - Rom file data
 		mxu_dbg("RQ_VENDOR_ROM_DATA");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x1940:	// RQ_VENDOR_STOP_ROM_DOWN - Stop firmware download */
+	  case 0x1940:	// RQ_VENDOR_STOP_ROM_DOWN - Stop firmware download
 		mxu_dbg("RQ_VENDOR_STOP_ROM_DOWN");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x2040:	// RQ_VENDOR_FW_DATA - Firmware data */
+	  case 0x2040:	// RQ_VENDOR_FW_DATA - Firmware data
 		mxu_dbg("RQ_VENDOR_FW_DATA");
 		// Ignore all data sent
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x2340:	// RQ_VENDOR_RESET_DEVICE - Try to reset the device */
+	  case 0x2340:	// RQ_VENDOR_RESET_DEVICE - Try to reset the device
 		mxu_dbg("RQ_VENDOR_RESET_DEVICE");
 		// Nothing to do
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
@@ -794,7 +794,7 @@ mxu_serial_nop_check_wIndex:
 		// Nothing to do
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x81c0:	// RQ_VENDOR_GET_VERSION - Get firmware version */
+	  case 0x81c0:	// RQ_VENDOR_GET_VERSION - Get firmware version
 		mxu_dbg("RQ_VENDOR_GET_VERSION");
 		if (setup.wLength >= 4) {
 			// Report a high version, so the Linux driver won't
@@ -812,25 +812,25 @@ mxu_serial_nop_check_wIndex:
 		}
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x82c0:	// RQ_VENDOR_GET_PAGE - Read flash page */
+	  case 0x82c0:	// RQ_VENDOR_GET_PAGE - Read flash page
 		mxu_dbg("RQ_VENDOR_GET_PAGE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x83c0:	// RQ_VENDOR_GET_ROM_PROC - Get ROM process state */
+	  case 0x83c0:	// RQ_VENDOR_GET_ROM_PROC - Get ROM process state
 		mxu_dbg("RQ_VENDOR_GET_ROM_PROC");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x84c0:	// RQ_VENDOR_GET_INQUEUE - Data in input buffer */
+	  case 0x84c0:	// RQ_VENDOR_GET_INQUEUE - Data in input buffer
 		mxu_dbg("RQ_VENDOR_GET_INQUEUE");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
 		return;
 
-	  case 0x85c0:	// RQ_VENDOR_GET_OUTQUEUE - Data in output buffer */
+	  case 0x85c0:	// RQ_VENDOR_GET_OUTQUEUE - Data in output buffer
 		mxu_dbg("RQ_VENDOR_GET_OUTQUEUE");
 		if (setup.wLength >= 4) {
 			// TODO Return actual queue length
@@ -847,7 +847,7 @@ mxu_serial_nop_check_wIndex:
 		}
 		goto mxu_serial_nop_check_wValue_0_and_wIndex;
 
-	  case 0x86c0:	// RQ_VENDOR_GET_MSR - Get modem status register */
+	  case 0x86c0:	// RQ_VENDOR_GET_MSR - Get modem status register
 		mxu_dbg("RQ_VENDOR_GET_MSR");
 		// XXX Unused by the Linux driver
 		endpoint0_stall();
@@ -1026,20 +1026,20 @@ static void usb_control(uint32_t stat)
 #endif
 #ifdef MXU_SERIAL_INTERFACE
 		switch (setup.wRequestAndType) {
-		  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate */
+		  case 0x0140:	// RQ_VENDOR_SET_BAUD - Set baud rate
 //pr_hex("Baud", buf, 4);
 //pr_info("Speed is %u bps\n", buf[3] << 24 | buf[2] << 16 | buf[1] << 8 | buf[0]);
 			// TODO Set baud value
 			endpoint0_transmit(NULL, 0);
 			break;
 
-		  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status */
+		  case 0x0240:	// RQ_VENDOR_SET_LINE - Set line status
 //pr_hex("Line status", buf, 4);
 			// TODO Decode line status
 			endpoint0_transmit(NULL, 0);
 			break;
 
-		  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars */
+		  case 0x0340:	// RQ_VENDOR_SET_CHARS - Set Xon/Xoff chars
 //pr_hex("Xon/Xoff chars", buf, 2);
 			// TODO Decode XON/XOFF chars
 			endpoint0_transmit(NULL, 0);

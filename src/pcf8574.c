@@ -16,7 +16,7 @@
 #include "util.h"
 
 // PCF8574 I2C address base
-#define PCF8574_BASE		      0x20 // Up to 4 devices */
+#define PCF8574_BASE		      0x20 // Up to 4 devices
 
 static uint8_t pcf8574_cache[4];
 
