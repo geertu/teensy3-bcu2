@@ -105,7 +105,7 @@ void gpio_init(void)
 
 void gpio_set(unsigned int ch, int on)
 {
-	digitalWrite(pin_gpio[ch], !on);
+	digitalWrite(pin_gpio[ch], on);
 	gpio_cache[ch] = on;
 }
 
